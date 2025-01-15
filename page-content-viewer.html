@@ -84,7 +84,10 @@
         <button class="tab" onclick="showTab('raw')">Raw Data</button>
     </div>
 
-    <button class="save-button" onclick="saveToFile()">Save Current View to File</button>
+    <div style="display: flex; gap: 10px;">
+        <button class="save-button" onclick="saveToFile()">Save Current View to File</button>
+        <button class="save-button" onclick="generateStaticPage()" style="background-color: #2196F3;">Generate Static Page</button>
+    </div>
 
     <div id="contentContainer">
         <div id="htmlContent" class="section">
@@ -211,6 +214,48 @@
             a.download = filename;
             a.click();
             window.URL.revokeObjectURL(url);
+        }
+
+        async function generateStaticPage() {
+            if (!currentPageData || !currentPageData.content) {
+                alert('Please select a page first');
+                return;
+            }
+
+            try {
+                const pageName = document.getElementById('pageSelector').selectedOptions[0].text.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const filename = `${pageName}-static-${timestamp}.html`;
+
+                // Generate static page
+                const response = await fetch('/api/generate-static', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(currentPageData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                // Save the generated HTML
+                const blob = new Blob([result.html], { type: 'text/html' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                alert('Static page generated successfully!');
+            } catch (error) {
+                console.error('Error generating static page:', error);
+                alert('Error generating static page: ' + error.message);
+            }
         }
 
         // Initialize the page

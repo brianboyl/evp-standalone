@@ -63,6 +63,28 @@ app.get('/api/pages/:id/content', async (req, res) => {
         const pageId = req.params.id;
         console.log('Fetching content for page:', pageId);
 
+        // First get the pages list to find the slug
+        const pagesResponse = await fetch(
+            `https://api.webflow.com/v2/sites/${process.env.WEBFLOW_SITE_ID}/pages`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${process.env.WEBFLOW_API_TOKEN}`,
+                    'accept-version': '2.0.0'
+                }
+            }
+        );
+
+        if (!pagesResponse.ok) {
+            throw new Error(`Failed to fetch pages: ${pagesResponse.status}`);
+        }
+
+        const pagesData = await pagesResponse.json();
+        const page = pagesData.pages.find(p => p.id === pageId);
+        
+        if (!page) {
+            throw new Error(`Page not found with ID: ${pageId}`);
+        }
+
         // Get site's CSS and JS
         const siteResponse = await fetch(
             `https://api.webflow.com/v2/sites/${process.env.WEBFLOW_SITE_ID}`,
@@ -82,7 +104,8 @@ app.get('/api/pages/:id/content', async (req, res) => {
         console.log('Successfully fetched site data');
 
         // Get the published URL for this page
-        const publishedUrl = `https://explorevisitplay.webflow.io`;
+        const pagePath = page.slug ? `/${page.slug}` : '';
+        const publishedUrl = `https://explorevisitplay.webflow.io${pagePath}`;
         console.log('Fetching content from URL:', publishedUrl);
         
         const contentResponse = await fetch(publishedUrl);
@@ -100,8 +123,8 @@ app.get('/api/pages/:id/content', async (req, res) => {
                 css: siteData.customCss || '',
                 javascript: siteData.customJs || '',
                 meta: {
-                    title: 'Home Page',
-                    description: ''
+                    title: page.title || page.name || '',
+                    description: page.description || ''
                 }
             }
         };
@@ -110,6 +133,91 @@ app.get('/api/pages/:id/content', async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+function generateStaticPage(data) {
+    const { html, css, javascript } = data.content;
+
+    // Remove Webflow badge from HTML
+    let processedHtml = html.replace(/<a[^>]*?w-webflow-badge[^>]*>[\s\S]*?<\/a>/g, '')
+                           .replace(/<div[^>]*?w-webflow-badge[^>]*>[\s\S]*?<\/div>/g, '');
+
+    // Remove Webflow badge related CSS
+    let processedCss = css.replace(/\.w-webflow-badge[\s\S]*?}/g, '')
+                         .replace(/\[data-brand-dark\][\s\S]*?}/g, '')
+                         .replace(/@media[^{]*{[^}]*\.w-webflow-badge[^}]*}/g, '');
+
+    // Create the static page template
+    let template = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>${data.content.meta.title || 'Static Page'}</title>
+    <meta content="${data.content.meta.description || ''}" name="description"/>
+    
+    <!-- Embedded CSS -->
+    <style>
+        ${processedCss}
+    </style>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        ${javascript}
+    </script>
+</head>
+<body>
+    ${processedHtml}
+    <script>
+        // Remove any dynamically added Webflow badges
+        function removeWebflowBadge() {
+            const badges = document.querySelectorAll('.w-webflow-badge, [data-brand-dark]');
+            badges.forEach(badge => badge.remove());
+        }
+        
+        // Run on page load
+        removeWebflowBadge();
+        
+        // Run after a short delay to catch any dynamically added badges
+        setTimeout(removeWebflowBadge, 1000);
+        
+        // Run when DOM changes
+        const observer = new MutationObserver(removeWebflowBadge);
+        observer.observe(document.body, { childList: true, subtree: true });
+    </script>
+</body>
+</html>`;
+
+    return template;
+}
+
+app.post('/api/generate-static', async (req, res) => {
+    try {
+        console.log('Received request to generate static page');
+        const pageData = req.body;
+        
+        if (!pageData || !pageData.content) {
+            console.error('Invalid page data received:', pageData);
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Invalid page data: missing content' 
+            });
+        }
+
+        console.log('Page data content keys:', Object.keys(pageData.content));
+        const staticHtml = generateStaticPage(pageData);
+        console.log('Static HTML generated successfully, length:', staticHtml.length);
+        
+        res.json({ success: true, html: staticHtml });
+    } catch (error) {
+        console.error('Error generating static page:', error);
+        console.error('Stack trace:', error.stack);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message,
+            stack: error.stack 
+        });
     }
 });
 
