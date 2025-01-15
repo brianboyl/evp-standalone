@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Home Page Data</h1>
+    <pre id="homeData">Loading...</pre>
+
+    <script>
+        async function fetchHomePage() {
+            try {
+                const response = await fetch('/api/home');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Log the raw data to help us understand its structure
+                console.log('Home page data:', data);
+                
+                document.getElementById('homeData').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('homeData').innerHTML = 
+                    `<div class="error">Error loading home page: ${error.message}</div>`;
+            }
+        }
+
+        // Load home page data when the page loads
+        document.addEventListener('DOMContentLoaded', fetchHomePage);
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webflow Pages Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .page-list {
+            list-style: none;
+            padding: 0;
+        }
+        .page-item {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .page-item:hover {
+            background-color: #f5f5f5;
+        }
+        .page-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .page-url {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .page-details {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Webflow Pages Test</h1>
+    
+    <div>
+        <h2>Site Pages</h2>
+        <ul id="pageList" class="page-list"></ul>
+    </div>
+
+    <div id="pageDetails" class="page-details">
+        <h2>Page Details</h2>
+        <pre id="pageJson"></pre>
+    </div>
+
+    <script>
+        async function fetchPages() {
+            try {
+                const response = await fetch('/api/pages');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Log the raw data to help us understand its structure
+                console.log('Raw API response:', data);
+                
+                // Check if we have pages in the response
+                if (!data.pages) {
+                    throw new Error('No pages data found in the response');
+                }
+                
+                displayPages(data.pages);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('pageList').innerHTML = 
+                    `<li class="error">Error loading pages: ${error.message}</li>`;
+            }
+        }
+
+        function displayPages(pages) {
+            const pageList = document.getElementById('pageList');
+            pageList.innerHTML = pages.map(page => {
+                // Log individual page data to see its structure
+                console.log('Page data:', page);
+                
+                return `
+                    <li class="page-item" onclick="fetchPageDetails('${page.id}')">
+                        <div class="page-title">${page.displayName || page.title || 'Untitled Page'}</div>
+                        <div class="page-url">Path: ${page.path || page.slug || 'No path available'}</div>
+                        <div class="page-url">Last Updated: ${new Date(page.lastUpdated || page.updatedOn).toLocaleString()}</div>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        async function fetchPageDetails(pageId) {
+            try {
+                const response = await fetch(`/api/pages/${pageId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Log the page details to see its structure
+                console.log('Page details:', data);
+                
+                displayPageDetails(data);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('pageJson').textContent = 
+                    `Error loading page details: ${error.message}`;
+                document.getElementById('pageDetails').style.display = 'block';
+            }
+        }
+
+        function displayPageDetails(pageData) {
+            const pageDetails = document.getElementById('pageDetails');
+            const pageJson = document.getElementById('pageJson');
+            
+            // Format the data for better readability
+            const formattedData = {
+                title: pageData.displayName || pageData.title || 'Untitled Page',
+                path: pageData.path || pageData.slug || 'No path available',
+                lastUpdated: new Date(pageData.lastUpdated || pageData.updatedOn).toLocaleString(),
+                id: pageData.id,
+                ...pageData
+            };
+            
+            pageJson.textContent = JSON.stringify(formattedData, null, 2);
+            pageDetails.style.display = 'block';
+        }
+
+        // Load pages when the page loads
+        document.addEventListener('DOMContentLoaded', fetchPages);
+    </script>
+</body>
+</html>

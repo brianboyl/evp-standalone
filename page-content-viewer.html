@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Content Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            background: #333;
+            color: white;
+        }
+        #pageSelector {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .save-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .save-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page Content Viewer</h1>
+    
+    <select id="pageSelector">
+        <option value="">Select a page...</option>
+    </select>
+
+    <div class="tab-container">
+        <button class="tab active" onclick="showTab('html')">HTML</button>
+        <button class="tab" onclick="showTab('css')">CSS</button>
+        <button class="tab" onclick="showTab('js')">JavaScript</button>
+        <button class="tab" onclick="showTab('raw')">Raw Data</button>
+    </div>
+
+    <button class="save-button" onclick="saveToFile()">Save Current View to File</button>
+
+    <div id="contentContainer">
+        <div id="htmlContent" class="section">
+            <div class="section-title">HTML Content</div>
+            <pre></pre>
+        </div>
+        <div id="cssContent" class="section" style="display: none;">
+            <div class="section-title">CSS Content</div>
+            <pre></pre>
+        </div>
+        <div id="jsContent" class="section" style="display: none;">
+            <div class="section-title">JavaScript Content</div>
+            <pre></pre>
+        </div>
+        <div id="rawContent" class="section" style="display: none;">
+            <div class="section-title">Raw Data</div>
+            <pre></pre>
+        </div>
+    </div>
+
+    <script>
+        let currentPageData = null;
+
+        async function loadPages() {
+            try {
+                const response = await fetch('/api/pages');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                const selector = document.getElementById('pageSelector');
+                data.pages.forEach(page => {
+                    const option = document.createElement('option');
+                    option.value = page.id;
+                    option.textContent = page.displayName || page.title || page.slug || '(root)';
+                    selector.appendChild(option);
+                });
+
+                selector.addEventListener('change', loadPageContent);
+            } catch (error) {
+                console.error('Error loading pages:', error);
+                document.body.innerHTML += `<div class="error">Error loading pages: ${error.message}</div>`;
+            }
+        }
+
+        async function loadPageContent() {
+            const pageId = document.getElementById('pageSelector').value;
+            if (!pageId) return;
+
+            try {
+                const response = await fetch(`/api/pages/${pageId}/content`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                currentPageData = await response.json();
+                updateContent();
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('contentContainer').innerHTML = 
+                    `<div class="error">Error loading page content: ${error.message}</div>`;
+            }
+        }
+
+        function updateContent() {
+            if (!currentPageData || !currentPageData.content) return;
+
+            document.querySelector('#htmlContent pre').textContent = currentPageData.content.html || '';
+            document.querySelector('#cssContent pre').textContent = currentPageData.content.css || '';
+            document.querySelector('#jsContent pre').textContent = currentPageData.content.javascript || '';
+            document.querySelector('#rawContent pre').textContent = JSON.stringify(currentPageData, null, 2);
+        }
+
+        function showTab(tabName) {
+            // Hide all content sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show the selected content section
+            document.getElementById(tabName + 'Content').style.display = 'block';
+            
+            // Update tab styling
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function saveToFile() {
+            if (!currentPageData) {
+                alert('Please select a page first');
+                return;
+            }
+
+            const activeTab = document.querySelector('.tab.active').textContent.toLowerCase();
+            let content = '';
+            let filename = '';
+
+            switch (activeTab) {
+                case 'html':
+                    content = currentPageData.content.html;
+                    filename = 'page.html';
+                    break;
+                case 'css':
+                    content = currentPageData.content.css;
+                    filename = 'styles.css';
+                    break;
+                case 'javascript':
+                    content = currentPageData.content.javascript;
+                    filename = 'script.js';
+                    break;
+                case 'raw data':
+                    content = JSON.stringify(currentPageData, null, 2);
+                    filename = 'data.json';
+                    break;
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPages();
+            showTab('html');
+        });
+    </script>
+</body>
+</html>

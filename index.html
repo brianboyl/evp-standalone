@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExploreVisitPlay</title>
+    <style>
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .card-text {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .read-more:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Explore Visit Play</h1>
+        <nav>
+            <a href="about.html">About</a>
+        </nav>
+    </header>
+    <main>
+        <div class="cards-grid">
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/santorini/600/400" alt="Santorini, Greece">
+                <div class="card-content">
+                    <h2 class="card-title">Santorini, Greece</h2>
+                    <p class="card-text">Discover the breathtaking beauty of Santorini, with its iconic white-washed buildings and stunning sunsets over the Aegean Sea.</p>
+                    <a class="read-more" href="article.html?locale=santorini">Read more</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/kyoto/600/400" alt="Kyoto, Japan">
+                <div class="card-content">
+                    <h2 class="card-title">Kyoto, Japan</h2>
+                    <p class="card-text">Experience the serenity of ancient temples and traditional gardens in Japan's cultural heart.</p>
+                    <a class="read-more" href="article.html?locale=kyoto">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/machu/600/400" alt="Machu Picchu, Peru">
+                <div class="card-content">
+                    <h2 class="card-title">Machu Picchu, Peru</h2>
+                    <p class="card-text">Explore the mysterious Incan citadel set high in the Andes Mountains, surrounded by mist and ancient stories.</p>
+                    <a class="read-more" href="article.html?locale=machu-picchu">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/venice/600/400" alt="Venice, Italy">
+                <div class="card-content">
+                    <h2 class="card-title">Venice, Italy</h2>
+                    <p class="card-text">Navigate the romantic canals and historic streets of this unique floating city in the heart of Italy.</p>
+                    <a class="read-more" href="article.html?locale=venice">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/bali/600/400" alt="Bali, Indonesia">
+                <div class="card-content">
+                    <h2 class="card-title">Bali, Indonesia</h2>
+                    <p class="card-text">Immerse yourself in the spiritual atmosphere of ancient temples and lush rice terraces on this paradise island.</p>
+                    <a class="read-more" href="article.html?locale=bali">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/paris/600/400" alt="Paris, France">
+                <div class="card-content">
+                    <h2 class="card-title">Paris, France</h2>
+                    <p class="card-text">Fall in love with the City of Light, from the iconic Eiffel Tower to charming cafés and world-class museums.</p>
+                    <a class="read-more" href="article.html?locale=paris">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/capetown/600/400" alt="Cape Town, South Africa">
+                <div class="card-content">
+                    <h2 class="card-title">Cape Town, South Africa</h2>
+                    <p class="card-text">Experience the perfect blend of nature and city life at the tip of Africa, with Table Mountain as your backdrop.</p>
+                    <a class="read-more" href="article.html?locale=cape-town">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/nyc/600/400" alt="New York City, USA">
+                <div class="card-content">
+                    <h2 class="card-title">New York City, USA</h2>
+                    <p class="card-text">Dive into the energy of the Big Apple, where skyscrapers meet culture in the city that never sleeps.</p>
+                    <a class="read-more" href="article.html?locale=new-york">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/maldives/600/400" alt="Maldives">
+                <div class="card-content">
+                    <h2 class="card-title">Maldives</h2>
+                    <p class="card-text">Escape to paradise in these pristine islands, where crystal-clear waters meet white sandy beaches.</p>
+                    <a class="read-more" href="article.html?locale=maldives">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/barcelona/600/400" alt="Barcelona, Spain">
+                <div class="card-content">
+                    <h2 class="card-title">Barcelona, Spain</h2>
+                    <p class="card-text">Discover the unique architecture of Gaudí and the vibrant culture of Catalonia's capital city.</p>
+                    <a class="read-more" href="article.html?locale=barcelona">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/dubai/600/400" alt="Dubai, UAE">
+                <div class="card-content">
+                    <h2 class="card-title">Dubai, UAE</h2>
+                    <p class="card-text">Experience the future in this modern oasis, where luxury meets innovation in the heart of the desert.</p>
+                    <a class="read-more" href="article.html?locale=dubai">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/rio/600/400" alt="Rio de Janeiro, Brazil">
+                <div class="card-content">
+                    <h2 class="card-title">Rio de Janeiro, Brazil</h2>
+                    <p class="card-text">Feel the rhythm of samba in this vibrant city, home to iconic beaches and the Christ the Redeemer statue.</p>
+                    <a class="read-more" href="article.html?locale=rio">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/iceland/600/400" alt="Iceland">
+                <div class="card-content">
+                    <h2 class="card-title">Iceland</h2>
+                    <p class="card-text">Witness the raw beauty of nature, from northern lights to volcanic landscapes in the land of fire and ice.</p>
+                    <a class="read-more" href="article.html?locale=iceland">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/sydney/600/400" alt="Sydney, Australia">
+                <div class="card-content">
+                    <h2 class="card-title">Sydney, Australia</h2>
+                    <p class="card-text">Explore the harbor city's iconic Opera House, beautiful beaches, and laid-back Australian lifestyle.</p>
+                    <a class="read-more" href="article.html?locale=sydney">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/marrakech/600/400" alt="Marrakech, Morocco">
+                <div class="card-content">
+                    <h2 class="card-title">Marrakech, Morocco</h2>
+                    <p class="card-text">Lost yourself in the magical medina, where ancient traditions meet modern luxury in North Africa.</p>
+                    <a class="read-more" href="article.html?locale=marrakech">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/prague/600/400" alt="Prague, Czech Republic">
+                <div class="card-content">
+                    <h2 class="card-title">Prague, Czech Republic</h2>
+                    <p class="card-text">Walk through centuries of history in this fairy-tale city of spires, castles, and cobblestone streets.</p>
+                    <a class="read-more" href="article.html?locale=prague">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/bangkok/600/400" alt="Bangkok, Thailand">
+                <div class="card-content">
+                    <h2 class="card-title">Bangkok, Thailand</h2>
+                    <p class="card-text">Immerse yourself in the bustling street life, ornate temples, and world-famous cuisine of Thailand's capital.</p>
+                    <a class="read-more" href="article.html?locale=bangkok">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/swiss-alps/600/400" alt="Swiss Alps">
+                <div class="card-content">
+                    <h2 class="card-title">Swiss Alps</h2>
+                    <p class="card-text">Experience the majesty of snow-capped peaks and charming mountain villages in the heart of Europe.</p>
+                    <a class="read-more" href="article.html?locale=swiss-alps">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/havana/600/400" alt="Havana, Cuba">
+                <div class="card-content">
+                    <h2 class="card-title">Havana, Cuba</h2>
+                    <p class="card-text">Step back in time among colorful colonial buildings and vintage cars in this Caribbean time capsule.</p>
+                    <a class="read-more" href="article.html?locale=havana">Read more</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img class="card-image" src="https://picsum.photos/seed/petra/600/400" alt="Petra, Jordan">
+                <div class="card-content">
+                    <h2 class="card-title">Petra, Jordan</h2>
+                    <p class="card-text">Marvel at the ancient rose-red city carved into cliff faces, one of the world's most impressive archaeological sites.</p>
+                    <a class="read-more" href="article.html?locale=petra">Read more</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Explore Visit Play</p>
+    </footer>
+    <script src="js/load-stories.js"></script>
+</body>
+</html>
