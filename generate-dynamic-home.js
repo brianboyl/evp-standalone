@@ -165,8 +165,14 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
             throw new Error('Could not find .pagewrapper container');
         }
 
-        // Select and populate the featured story
-        const featuredStory = stories[Math.floor(Math.random() * stories.length)];
+        // Find the first featured story
+        let featuredStory = stories.find(story => story.fieldData['featured'] === true);
+        if (!featuredStory) {
+            console.warn('No featured story found. Please set at least one story as featured in Webflow.');
+            // Use the first story as a fallback
+            featuredStory = stories[0];
+            console.log('Using first story as fallback:', featuredStory.fieldData['main-title']);
+        }
         
         // Populate the landing cover (for larger screens)
         const $landingCover = $('.landingcoverwrapper .coversection');

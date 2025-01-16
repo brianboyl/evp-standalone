@@ -51,14 +51,19 @@ async function testWebflowAPI() {
     // Test 2: Get Specific Site
     await makeRequest(`/sites/${config.siteId}`, 'Get Specific Site');
 
-    // Test 3: List Site Collections
-    await makeRequest(`/sites/${config.siteId}/collections`, 'List Site Collections');
+    // Test 3: Get Collection Items
+    const collectionResult = await makeRequest(
+        `/collections/${config.collectionId}/items?limit=1`,
+        'Get Collection Items'
+    );
 
-    // Test 4: Get Specific Collection
-    await makeRequest(`/collections/${config.collectionId}`, 'Get Specific Collection');
-
-    // Test 5: Get Collection Items
-    await makeRequest(`/collections/${config.collectionId}/items`, 'Get Collection Items');
+    // Test 4: Check Fields
+    if (collectionResult.success) {
+        console.log('\n=== Collection Fields Analysis ===');
+        const item = collectionResult.data.items[0];
+        console.log('Available Fields:', Object.keys(item.fieldData));
+        console.log('\nFeatured Field:', item.fieldData['featured']);
+    }
 }
 
 console.log('Starting Webflow API Tests...\n');
