@@ -1,8 +1,3 @@
-const fs = require('fs').promises;
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
-require('dotenv').config();
-
 // Categories and their corresponding tag IDs
 const CATEGORIES = {
     'Articles': ['666a6c762536fd5cf0bd7f33'],
@@ -25,31 +20,11 @@ const PHOTOGRAPHERS = {
 
 async function fetchStories() {
     try {
-        // First try to read from cache
-        try {
-            const cacheData = await fs.readFile('cache/stories.json', 'utf8');
-            const cache = JSON.parse(cacheData);
-            
-            // Check if cache is older than 1 hour
-            const cacheAge = Date.now() - new Date(cache.timestamp).getTime();
-            const oneHour = 60 * 60 * 1000;
-            
-            if (cacheAge < oneHour) {
-                console.log('Using cached stories');
-                return cache.stories;
-            } else {
-                console.log('Cache is older than 1 hour, fetching fresh stories...');
-            }
-        } catch (error) {
-            console.log('No valid cache found, fetching fresh stories...');
-        }
-        
-        // If cache is invalid or too old, fetch fresh stories
         const response = await fetch(
-            `https://api.webflow.com/v2/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`,
+            `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`,
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.WEBFLOW_API_TOKEN}`,
+                    'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
                     'accept-version': '2.0.0',
                     'Accept': 'application/json'
                 }
@@ -61,12 +36,7 @@ async function fetchStories() {
         }
 
         const data = await response.json();
-        const stories = data.items || [];
-
-        // Cache the stories
-        await fs.writeFile('cache/stories.json', JSON.stringify({ timestamp: new Date().toISOString(), stories }));
-
-        return stories;
+        return data.items || [];
     } catch (error) {
         console.error('Error fetching stories:', error);
         return [];
@@ -121,67 +91,35 @@ function generateStoryCard(story) {
 
 function generateCategorySection(categoryName, stories) {
     const filteredStories = filterStoriesByCategory(stories, CATEGORIES[categoryName]);
-    const randomStories = shuffleArray([...filteredStories]).slice(0, 4); // Get 4 random stories
+    const randomStories = shuffleArray([...filteredStories]).slice(0, 4);
 
     if (randomStories.length === 0) {
         console.log(`No stories found for category: ${categoryName}`);
         return '';
     }
 
-    return `
-        <section class="content-section">
-            <div class="topic-section-header">
-                <h1 class="section-header">${categoryName}</h1>
-            </div>
-            <div class="storywrappernofeat w-dyn-list">
-                <div role="list" class="landingstorysection w-dyn-items">
-                    ${randomStories.map(story => generateStoryCard(story)).join('')}
-                </div>
-            </div>
-            <div class="topic-section-footer">
-                <a class="w-inline-block">
-                    <h1 class="section-footer-link-text">More ${categoryName}...</h1>
-                </a>
-            </div>
-        </section>
-    `;
+    const storyCards = randomStories.map(story => generateStoryCard(story)).join('');
+    return storyCards;
 }
 
-async function generateDynamicHome() {
-    try {
-        // Read the template file
-        const template = await fs.readFile('dynamic-pages/home.html', 'utf8');
-        const $ = cheerio.load(template);
-
-        // Fetch all stories
-        const stories = await fetchStories();
-        console.log(`Fetched ${stories.length} stories`);
-        
-        // Find the container where we want to insert our sections
-        const $container = $('.pagewrapper');
-        if (!$container.length) {
-            throw new Error('Could not find .pagewrapper container');
+async function updateCategoryContent() {
+    const stories = await fetchStories();
+    
+    Object.keys(CATEGORIES).forEach(categoryName => {
+        const sectionContent = generateCategorySection(categoryName, stories);
+        const sectionElement = document.querySelector(`[data-category="${categoryName}"] .landingstorysection`);
+        if (sectionElement) {
+            sectionElement.innerHTML = sectionContent;
         }
-
-        // Clear existing content sections
-        $('.content-section').remove();
-
-        // Generate new content sections
-        const contentSections = Object.keys(CATEGORIES)
-            .map(category => generateCategorySection(category, stories))
-            .join('');
-
-        // Insert the new content sections into the container
-        $container.append(contentSections);
-
-        // Write the modified file
-        await fs.writeFile('dynamic-pages/home.html', $.html());
-        console.log('Successfully generated dynamic home page');
-
-    } catch (error) {
-        console.error('Error generating dynamic home:', error);
-    }
+    });
 }
 
-// Run the script
-generateDynamicHome();
+// Update content when the page loads
+document.addEventListener('DOMContentLoaded', updateCategoryContent);
+
+// Add a refresh button
+const refreshButton = document.createElement('button');
+refreshButton.textContent = 'Refresh Stories';
+refreshButton.className = 'refresh-button';
+refreshButton.addEventListener('click', updateCategoryContent);
+document.querySelector('.pagewrapper').prepend(refreshButton);
