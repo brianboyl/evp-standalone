@@ -105,15 +105,17 @@ function generateStoryCard(story) {
                     <div class="phototext">Photo:</div>
                     <div class="coverphotocredit">${photographerName}</div>
                 </div>
-                <h2 class="storyitemheading">${fieldData['main-title'] || ''}</h2>
-                <h3 class="storyitemsubhead">${fieldData['subtitle'] || ''}</h3>
-                <h4 class="storyitembyline">${authorName}</h4>
-                <div class="storyitemteasertext">${fieldData['content-summary'] || ''}</div>
-                <a href="/stories/${story.slug}" class="link-block-2 w-inline-block">
-                    <img src="https://cdn.prod.website-files.com/611592871745f6ed8d8306bc/614f085fb7876ca33c1520d6_Read%20On%20Button.svg" 
-                         loading="lazy" 
-                         alt="Click here to read more of the article.">
-                </a>
+                <div class="storyitemtextblock">
+                    <h2 class="storyitemheading">${fieldData['main-title'] || ''}</h2>
+                    <h3 class="storyitemsubhead">${fieldData['subtitle'] || ''}</h3>
+                    <h4 class="storyitembyline">${authorName}</h4>
+                    <div class="storyitemteasertext">${fieldData['content-summary'] || ''}</div>
+                    <a href="/stories/${story.slug}" class="link-block-2 w-inline-block">
+                        <img src="https://cdn.prod.website-files.com/611592871745f6ed8d8306bc/614f085fb7876ca33c1520d6_Read%20On%20Button.svg" 
+                             loading="lazy" 
+                             alt="Click here to read more of the article.">
+                    </a>
+                </div>
             </div>
         </div>
     `;
@@ -135,11 +137,11 @@ function generateCategorySection(categoryName, stories) {
             </div>
             <div class="storywrappernofeat w-dyn-list">
                 <div role="list" class="landingstorysection w-dyn-items">
-                    ${randomStories.map(story => generateStoryCard(story)).join('')}
+                    ${randomStories.map(story => generateStoryCard(story)).join('\n')}
                 </div>
             </div>
             <div class="topic-section-footer">
-                <a class="w-inline-block">
+                <a href="/categories/${categoryName.toLowerCase().replace(/\s+/g, '-')}" class="w-inline-block">
                     <h1 class="section-footer-link-text">More ${categoryName}...</h1>
                 </a>
             </div>
@@ -147,11 +149,11 @@ function generateCategorySection(categoryName, stories) {
     `;
 }
 
-async function generateDynamicHome() {
+async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
     try {
         // Read the template file
-        const template = await fs.readFile('dynamic-pages/home.html', 'utf8');
-        const $ = cheerio.load(template);
+        const template = await fs.readFile('dynamic-pages/template.html', 'utf8');
+        const $ = cheerio.load(template, { decodeEntities: false });
 
         // Fetch all stories
         const stories = await fetchStories();
@@ -163,25 +165,32 @@ async function generateDynamicHome() {
             throw new Error('Could not find .pagewrapper container');
         }
 
-        // Clear existing content sections
+        // Clear existing content sections but keep the menu
         $('.content-section').remove();
 
         // Generate new content sections
         const contentSections = Object.keys(CATEGORIES)
             .map(category => generateCategorySection(category, stories))
-            .join('');
+            .join('\n');
 
         // Insert the new content sections into the container
         $container.append(contentSections);
 
         // Write the modified file
-        await fs.writeFile('dynamic-pages/home.html', $.html());
-        console.log('Successfully generated dynamic home page');
+        await fs.writeFile(outputPath, $.html());
+        console.log(`Successfully generated page at ${outputPath}`);
 
     } catch (error) {
         console.error('Error generating dynamic home:', error);
+        throw error;
     }
 }
 
-// Run the script
-generateDynamicHome();
+// If run directly, check for command line arguments
+if (require.main === module) {
+    const args = process.argv.slice(2);
+    const outputPath = args[0] || 'dynamic-pages/home.html';
+    generateDynamicHome(outputPath);
+}
+
+module.exports = generateDynamicHome;

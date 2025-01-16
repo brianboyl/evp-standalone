@@ -1,9 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs').promises;
 const fetch = require('node-fetch');
+const generateDynamicHome = require('./generate-dynamic-home');
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 // Add this line to handle JSON requests
 app.use(express.json({ limit: '50mb' }));
@@ -19,9 +22,6 @@ app.get('/api/test', (req, res) => {
         }
     });
 });
-
-// Serve static files from the root directory
-app.use(express.static(__dirname));
 
 // API endpoint to fetch site pages
 app.get('/api/pages', async (req, res) => {
@@ -221,7 +221,53 @@ app.post('/api/generate-static', async (req, res) => {
     }
 });
 
-const port = process.env.PORT || 3000;
+// Serve dynamic home page at /
+app.get('/', async (req, res) => {
+    try {
+        console.log('Generating fresh home page...');
+        
+        // Generate a unique filename for this request
+        const timestamp = Date.now();
+        const tempFile = path.join('dynamic-pages', `home-${timestamp}.html`);
+        
+        // Generate a fresh page
+        await generateDynamicHome(tempFile);
+        
+        // Read and send the page
+        const html = await fs.readFile(tempFile, 'utf8');
+        
+        // Set headers to prevent caching
+        res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        });
+        
+        // Send the page
+        res.send(html);
+        console.log('Sent fresh home page');
+        
+        // Clean up the temporary file
+        await fs.unlink(tempFile).catch(console.error);
+    } catch (error) {
+        console.error('Error serving dynamic home:', error);
+        res.status(500).send('Error generating page');
+    }
+});
+
+// Redirect /dynamic-pages/home.html to / to ensure users get dynamic content
+app.get('/dynamic-pages/home.html', (req, res) => {
+    console.log('Redirecting from static to dynamic page');
+    res.redirect('/');
+});
+
+// Serve static files from the root directory, excluding index.html
+app.use(express.static('.', {
+    index: false // Prevent serving index.html at /
+}));
+
+// Start the server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    console.log('Visit http://localhost:3000 to see dynamic content');
 });
