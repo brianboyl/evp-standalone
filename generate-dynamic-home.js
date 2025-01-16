@@ -158,15 +158,38 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
         // Fetch all stories
         const stories = await fetchStories();
         console.log(`Fetched ${stories.length} stories`);
-        
+
         // Find the container where we want to insert our sections
         const $container = $('.pagewrapper');
         if (!$container.length) {
             throw new Error('Could not find .pagewrapper container');
         }
 
-        // Clear existing content sections but keep the menu
-        $('.content-section').remove();
+        // Select and populate the featured story
+        const featuredStory = stories[Math.floor(Math.random() * stories.length)];
+        
+        // Populate the landing cover (for larger screens)
+        const $landingCover = $('.landingcoverwrapper .coversection');
+        if ($landingCover.length) {
+            $landingCover.find('.coverimage').attr('src', featuredStory.fieldData['main-image']?.url);
+            $landingCover.find('.coverimage').attr('alt', featuredStory.fieldData['main-title']);
+            $landingCover.find('.coverphotocredit').text(PHOTOGRAPHERS[featuredStory.fieldData['photographer']] || featuredStory.fieldData['photographer']);
+            $landingCover.find('.coverheading').text(featuredStory.fieldData['main-title']);
+            $landingCover.find('.readonbutton').attr('href', `/stories/${featuredStory.slug}`);
+        }
+
+        // Populate the featured story section (for mobile)
+        const $featuredSection = $('.storywrapperfeatonly .storyitem');
+        if ($featuredSection.length) {
+            $featuredSection.find('.storyitemimage').attr('src', featuredStory.fieldData['big-thumbnail']?.url);
+            $featuredSection.find('.storyitemimage').attr('alt', featuredStory.fieldData['main-title']);
+            $featuredSection.find('.coverphotocredit').text(PHOTOGRAPHERS[featuredStory.fieldData['photographer']] || featuredStory.fieldData['photographer']);
+            $featuredSection.find('.storyitemheading').text(featuredStory.fieldData['main-title']);
+            $featuredSection.find('.storyitemsubhead').text(featuredStory.fieldData['subtitle']);
+            $featuredSection.find('.storyitembyline').text(AUTHORS[featuredStory.fieldData['author']] || featuredStory.fieldData['author']);
+            $featuredSection.find('.storyitemteasertext').text(featuredStory.fieldData['content-summary']);
+            $featuredSection.find('.link-block-2').attr('href', `/stories/${featuredStory.slug}`);
+        }
 
         // Generate new content sections
         const contentSections = Object.keys(CATEGORIES)
