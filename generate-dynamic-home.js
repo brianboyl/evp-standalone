@@ -44,20 +44,21 @@ async function fetchStories() {
             const cache = JSON.parse(cacheData);
             
             // Check if cache is older than 1 hour
-            const cacheAge = Date.now() - new Date(cache.timestamp).getTime();
-            const oneHour = 60 * 60 * 1000;
+            const cacheTime = new Date(cache.timestamp);
+            const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
             
-            if (cacheAge < oneHour) {
+            if (cacheTime > hourAgo) {
                 console.log('Using cached stories');
                 return cache.stories;
-            } else {
-                console.log('Cache is older than 1 hour, fetching fresh stories...');
             }
         } catch (error) {
-            console.log('No valid cache found, fetching fresh stories...');
+            console.log('No cache found or cache invalid');
         }
+
+        console.log('Fetching fresh stories from Webflow...');
+        console.log('Using Collection ID:', process.env.WEBFLOW_COLLECTION_ID);
         
-        // If cache is invalid or too old, fetch fresh stories
+        // Fetch stories from Webflow using v2 API
         const response = await fetch(
             `https://api.webflow.com/v2/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`,
             {
@@ -70,19 +71,45 @@ async function fetchStories() {
         );
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch stories: ${response.status}`);
+            throw new Error(`Webflow API error: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
+        console.log('Webflow API response:', {
+            total: data.pagination?.total || 0,
+            count: data.items?.length || 0,
+            offset: data.pagination?.offset || 0,
+            limit: data.pagination?.limit || 0
+        });
+
+        if (!data.items || !Array.isArray(data.items)) {
+            throw new Error('Invalid response from Webflow API: no items array');
+        }
+
         const stories = data.items || [];
+        if (stories.length === 0) {
+            throw new Error('No stories found in Webflow collection');
+        }
+
+        // Validate story structure for v2 API
+        stories.forEach((story, index) => {
+            if (!story.fieldData && !story.fields) {
+                throw new Error(`Story at index ${index} is missing both fieldData and fields`);
+            }
+            // If using fields instead of fieldData, normalize it
+            if (!story.fieldData && story.fields) {
+                story.fieldData = story.fields;
+            }
+        });
 
         // Cache the stories
         await fs.writeFile(cacheFile, JSON.stringify({ timestamp: new Date().toISOString(), stories }));
+        console.log(`Cached ${stories.length} stories`);
 
         return stories;
     } catch (error) {
         console.error('Error fetching stories:', error);
-        return [];
+        throw error;
     }
 }
 
@@ -188,25 +215,20 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
         const stories = await fetchStories();
         console.log(`Fetched ${stories.length} stories`);
 
-        // Keep track of which stories have been used
-        const usedStoryIds = new Set();
-
-        // Find the container where we want to insert our sections
-        const $container = $('.pagewrapper');
-        if (!$container.length) {
-            throw new Error('Could not find .pagewrapper container');
-        }
-
         // Find the first featured story
         let featuredStory = stories.find(story => story.fieldData['featured'] === true);
         if (!featuredStory) {
             console.warn('No featured story found. Please set at least one story as featured in Webflow.');
             // Use the first story as a fallback
             featuredStory = stories[0];
+            if (!featuredStory) {
+                throw new Error('No stories available to use as featured story');
+            }
             console.log('Using first story as fallback:', featuredStory.fieldData['main-title']);
         }
 
         // Add featured story to used stories
+        const usedStoryIds = new Set();
         usedStoryIds.add(featuredStory.id);
         console.log('Added featured story to used stories:', featuredStory.fieldData['main-title']);
         
@@ -297,6 +319,7 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
             .join('\n');
 
         // Insert the new content sections into the container
+        const $container = $('.content-container');
         $container.append(contentSections);
 
         // Write the modified file
