@@ -4,8 +4,9 @@ const cheerio = require('cheerio');
 const path = require('path');
 require('dotenv').config();
 
-// Get the project root directory
-const PROJECT_ROOT = process.cwd();
+// Get the appropriate root directory based on environment
+const PROJECT_ROOT = process.env.VERCEL ? '/tmp' : process.cwd();
+console.log('Using project root:', PROJECT_ROOT);
 
 // Categories and their corresponding tag IDs
 const CATEGORIES = {
@@ -38,6 +39,7 @@ async function fetchStories() {
             
             // Create cache directory if it doesn't exist
             await fs.mkdir(cacheDir, { recursive: true });
+            console.log('Cache directory:', cacheDir);
             
             const cacheData = await fs.readFile(cacheFile, 'utf8');
             const cache = JSON.parse(cacheData);
@@ -200,11 +202,15 @@ function generateCategorySection(categoryName, stories) {
 
 async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
     try {
-        // Make outputPath absolute if it isn't already
-        outputPath = path.isAbsolute(outputPath) ? outputPath : path.join(PROJECT_ROOT, outputPath);
+        // In Vercel, write to /tmp
+        if (process.env.VERCEL) {
+            outputPath = path.join('/tmp', path.basename(outputPath));
+        } else {
+            outputPath = path.isAbsolute(outputPath) ? outputPath : path.join(PROJECT_ROOT, outputPath);
+        }
         console.log('Output path:', outputPath);
 
-        // Create dynamic-pages directory if it doesn't exist
+        // Create output directory if it doesn't exist
         const dir = path.dirname(outputPath);
         try {
             await fs.mkdir(dir, { recursive: true });
@@ -213,8 +219,8 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
             console.log('Directory already exists or could not be created:', dir);
         }
 
-        // Read the template file using absolute path
-        const templatePath = path.join(PROJECT_ROOT, 'dynamic-pages', 'template.html');
+        // Read the template file - this should still be in the deployment
+        const templatePath = path.join(process.cwd(), 'dynamic-pages', 'template.html');
         console.log('Template path:', templatePath);
         const template = await fs.readFile(templatePath, 'utf8');
         console.log('Template loaded successfully');

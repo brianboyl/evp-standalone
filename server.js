@@ -19,8 +19,11 @@ app.get('/', async (req, res) => {
     try {
         console.log('Generating home page...');
         
-        // Generate the dynamic home page using absolute path
-        const outputPath = path.join(process.cwd(), 'dynamic-pages', 'home.html');
+        // In Vercel, use /tmp for the output file
+        const outputPath = process.env.VERCEL 
+            ? path.join('/tmp', 'home.html')
+            : path.join(process.cwd(), 'dynamic-pages', 'home.html');
+            
         await generateDynamicHome(outputPath);
         console.log('Home page generated successfully');
         
