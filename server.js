@@ -11,6 +11,24 @@ const port = process.env.PORT || 3000;
 // Add this line to handle JSON requests
 app.use(express.json({ limit: '50mb' }));
 
+// Serve static files from the dynamic-pages directory
+app.use(express.static('dynamic-pages'));
+
+// Root route - generate and serve home page
+app.get('/', async (req, res) => {
+    try {
+        // Generate the dynamic home page
+        await generateDynamicHome();
+        
+        // Send the generated home page
+        const homePage = await fs.readFile('dynamic-pages/home.html', 'utf8');
+        res.send(homePage);
+    } catch (error) {
+        console.error('Error serving home page:', error);
+        res.status(500).send('Error generating home page');
+    }
+});
+
 // Test endpoint to verify server is running latest code
 app.get('/api/test', (req, res) => {
     console.log('Test endpoint hit at:', new Date().toISOString());
@@ -218,46 +236,6 @@ app.post('/api/generate-static', async (req, res) => {
             error: error.message,
             stack: error.stack 
         });
-    }
-});
-
-// Serve dynamic home page at /
-app.get('/', async (req, res) => {
-    try {
-        console.log('Generating fresh home page...');
-        
-        // Clear the require cache for generateDynamicHome
-        delete require.cache[require.resolve('./generate-dynamic-home')];
-        const generateDynamicHome = require('./generate-dynamic-home');
-        
-        // Generate a unique filename for this request
-        const timestamp = Date.now();
-        const tempFile = path.join('dynamic-pages', `home-${timestamp}.html`);
-        
-        // Generate a fresh page
-        await generateDynamicHome(tempFile);
-        
-        // Read and send the page
-        const html = await fs.readFile(tempFile, 'utf8');
-        
-        // Set strong cache-busting headers
-        res.set({
-            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-            'ETag': false,
-            'Last-Modified': (new Date()).toUTCString()
-        });
-        
-        // Send the page
-        res.send(html);
-        console.log('Sent fresh home page');
-        
-        // Clean up the temporary file
-        await fs.unlink(tempFile).catch(console.error);
-    } catch (error) {
-        console.error('Error serving dynamic home:', error);
-        res.status(500).send('Error generating page');
     }
 });
 
