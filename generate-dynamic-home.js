@@ -198,41 +198,34 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
             $featuredSection.find('.cms-item').attr('data-id', featuredStory.slug);
         }
 
-        // Keep the static Featured section from template.html
-        // const featuredStories = stories.filter(story => story.fieldData['featured'] === true);
-        // console.log('Found featured stories:', featuredStories.length);
-        // const $featuredList = $('.storywrappernofeat .landingstorysection');
-        // console.log('Found featured list:', $featuredList.length);
-        // if ($featuredList.length) {
-        //     // Generate HTML for each featured story
-        //     const featuredHtml = featuredStories.map(story => `
-        //         <div role="listitem" class="storyitem w-dyn-item">
-        //             <a href="/stories/${story.slug}" class="storyitemlinkblock w-inline-block">
-        //                 <img src="${story.fieldData['big-thumbnail']?.url}" loading="lazy" alt="${story.fieldData['main-title']}" class="storyitemimage"/>
-        //                 <div class="photocreditblock">
-        //                     <div class="phototext">Photo:</div>
-        //                     <div class="coverphotocredit">${PHOTOGRAPHERS[story.fieldData['photographer']] || story.fieldData['photographer']}</div>
-        //                 </div>
-        //                 <h2 class="storyitemheading">${story.fieldData['main-title']}</h2>
-        //                 <h3 class="storyitemsubhead">${story.fieldData['subtitle']}</h3>
-        //                 <div class="storyitembylineblock">
-        //                     <div class="storyitembyline">${AUTHORS[story.fieldData['author']] || story.fieldData['author']}</div>
-        //                 </div>
-        //                 <div class="storyitemteasertext">${story.fieldData['content-summary']}</div>
-        //                 <div class="storyitembuttoncontainer">
-        //                     <img src="https://cdn.prod.website-files.com/611592871745f6ed8d8306bc/614f085fb7876ca33c1520d6_Read%20On%20Button.svg" loading="lazy" alt="Click here to read more of the article."/>
-        //                 </div>
-        //             </a>
-        //             <div class="w-embed">
-        //                 <div class="cms-item" data-id="${story.slug}">
-        //                     <!-- Optional: Place any other static content here -->
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     `).join('');
+        // Get tags from the featured story
+        const featuredTags = featuredStory.fieldData['tags'] || [];
+        console.log('Featured story tags:', featuredTags);
+
+        // Find all stories that share at least one tag with the featured story
+        const relatedStories = stories.filter(story => {
+            // Skip the featured story itself
+            if (story.id === featuredStory.id) return false;
             
-        //     $featuredList.html(featuredHtml);
-        // }
+            // Get this story's tags
+            const storyTags = story.fieldData['tags'] || [];
+            
+            // Check if any tags match
+            return storyTags.some(tag => featuredTags.includes(tag));
+        });
+        console.log(`Found ${relatedStories.length} stories with matching tags`);
+
+        // Randomly select 4 stories (or fewer if we don't have 4)
+        const selectedStories = shuffleArray([...relatedStories]).slice(0, 4);
+        console.log(`Selected ${selectedStories.length} stories for Featured section`);
+
+        // Populate the Featured stories section with randomly selected related stories
+        const $featuredList = $('.storywrappernofeat .landingstorysection');
+        if ($featuredList.length && selectedStories.length > 0) {
+            console.log('Populating Featured section with stories:', selectedStories.map(s => s.fieldData['main-title']));
+            const featuredHtml = selectedStories.map(story => generateStoryCard(story)).join('\n');
+            $featuredList.html(featuredHtml);
+        }
 
         // Generate new content sections
         const contentSections = Object.keys(CATEGORIES)
