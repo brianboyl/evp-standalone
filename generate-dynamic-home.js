@@ -29,17 +29,16 @@ const PHOTOGRAPHERS = {
 
 async function fetchStories() {
     try {
-        // Create cache directory if it doesn't exist
-        const cacheDir = path.join(PROJECT_ROOT, 'cache');
+        let stories = null;
+        
+        // Try to read from cache first
         try {
+            const cacheDir = path.join(PROJECT_ROOT, 'cache');
+            const cacheFile = path.join(cacheDir, 'stories.json');
+            
+            // Create cache directory if it doesn't exist
             await fs.mkdir(cacheDir, { recursive: true });
-        } catch (error) {
-            console.log('Cache directory already exists or could not be created');
-        }
-
-        // First try to read from cache
-        const cacheFile = path.join(cacheDir, 'stories.json');
-        try {
+            
             const cacheData = await fs.readFile(cacheFile, 'utf8');
             const cache = JSON.parse(cacheData);
             
@@ -47,12 +46,13 @@ async function fetchStories() {
             const cacheTime = new Date(cache.timestamp);
             const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
             
-            if (cacheTime > hourAgo) {
+            if (cacheTime > hourAgo && cache.stories && cache.stories.length > 0) {
                 console.log('Using cached stories');
                 return cache.stories;
             }
         } catch (error) {
-            console.log('No cache found or cache invalid');
+            // Ignore cache errors and fetch fresh data
+            console.log('Cache error, will fetch fresh data:', error.message);
         }
 
         console.log('Fetching fresh stories from Webflow...');
@@ -71,7 +71,8 @@ async function fetchStories() {
         );
 
         if (!response.ok) {
-            throw new Error(`Webflow API error: ${response.status} ${response.statusText}`);
+            const errorText = await response.text();
+            throw new Error(`Webflow API error: ${response.status} ${response.statusText}\n${errorText}`);
         }
 
         const data = await response.json();
@@ -83,10 +84,11 @@ async function fetchStories() {
         });
 
         if (!data.items || !Array.isArray(data.items)) {
+            console.error('Full API response:', JSON.stringify(data, null, 2));
             throw new Error('Invalid response from Webflow API: no items array');
         }
 
-        const stories = data.items || [];
+        stories = data.items || [];
         if (stories.length === 0) {
             throw new Error('No stories found in Webflow collection');
         }
@@ -94,6 +96,7 @@ async function fetchStories() {
         // Validate story structure for v2 API
         stories.forEach((story, index) => {
             if (!story.fieldData && !story.fields) {
+                console.error('Invalid story:', JSON.stringify(story, null, 2));
                 throw new Error(`Story at index ${index} is missing both fieldData and fields`);
             }
             // If using fields instead of fieldData, normalize it
@@ -102,9 +105,16 @@ async function fetchStories() {
             }
         });
 
-        // Cache the stories
-        await fs.writeFile(cacheFile, JSON.stringify({ timestamp: new Date().toISOString(), stories }));
-        console.log(`Cached ${stories.length} stories`);
+        // Try to cache the stories, but don't fail if caching fails
+        try {
+            const cacheDir = path.join(PROJECT_ROOT, 'cache');
+            const cacheFile = path.join(cacheDir, 'stories.json');
+            await fs.mkdir(cacheDir, { recursive: true });
+            await fs.writeFile(cacheFile, JSON.stringify({ timestamp: new Date().toISOString(), stories }));
+            console.log(`Cached ${stories.length} stories`);
+        } catch (error) {
+            console.warn('Failed to cache stories:', error.message);
+        }
 
         return stories;
     } catch (error) {
