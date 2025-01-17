@@ -226,6 +226,10 @@ app.get('/', async (req, res) => {
     try {
         console.log('Generating fresh home page...');
         
+        // Clear the require cache for generateDynamicHome
+        delete require.cache[require.resolve('./generate-dynamic-home')];
+        const generateDynamicHome = require('./generate-dynamic-home');
+        
         // Generate a unique filename for this request
         const timestamp = Date.now();
         const tempFile = path.join('dynamic-pages', `home-${timestamp}.html`);
@@ -236,11 +240,13 @@ app.get('/', async (req, res) => {
         // Read and send the page
         const html = await fs.readFile(tempFile, 'utf8');
         
-        // Set headers to prevent caching
+        // Set strong cache-busting headers
         res.set({
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
-            'Expires': '0'
+            'Expires': '0',
+            'ETag': false,
+            'Last-Modified': (new Date()).toUTCString()
         });
         
         // Send the page

@@ -195,7 +195,44 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
             $featuredSection.find('.storyitembyline').text(AUTHORS[featuredStory.fieldData['author']] || featuredStory.fieldData['author']);
             $featuredSection.find('.storyitemteasertext').text(featuredStory.fieldData['content-summary']);
             $featuredSection.find('.link-block-2').attr('href', `/stories/${featuredStory.slug}`);
+            $featuredSection.find('.cms-item').attr('data-id', featuredStory.slug);
         }
+
+        // Keep the static Featured section from template.html
+        // const featuredStories = stories.filter(story => story.fieldData['featured'] === true);
+        // console.log('Found featured stories:', featuredStories.length);
+        // const $featuredList = $('.storywrappernofeat .landingstorysection');
+        // console.log('Found featured list:', $featuredList.length);
+        // if ($featuredList.length) {
+        //     // Generate HTML for each featured story
+        //     const featuredHtml = featuredStories.map(story => `
+        //         <div role="listitem" class="storyitem w-dyn-item">
+        //             <a href="/stories/${story.slug}" class="storyitemlinkblock w-inline-block">
+        //                 <img src="${story.fieldData['big-thumbnail']?.url}" loading="lazy" alt="${story.fieldData['main-title']}" class="storyitemimage"/>
+        //                 <div class="photocreditblock">
+        //                     <div class="phototext">Photo:</div>
+        //                     <div class="coverphotocredit">${PHOTOGRAPHERS[story.fieldData['photographer']] || story.fieldData['photographer']}</div>
+        //                 </div>
+        //                 <h2 class="storyitemheading">${story.fieldData['main-title']}</h2>
+        //                 <h3 class="storyitemsubhead">${story.fieldData['subtitle']}</h3>
+        //                 <div class="storyitembylineblock">
+        //                     <div class="storyitembyline">${AUTHORS[story.fieldData['author']] || story.fieldData['author']}</div>
+        //                 </div>
+        //                 <div class="storyitemteasertext">${story.fieldData['content-summary']}</div>
+        //                 <div class="storyitembuttoncontainer">
+        //                     <img src="https://cdn.prod.website-files.com/611592871745f6ed8d8306bc/614f085fb7876ca33c1520d6_Read%20On%20Button.svg" loading="lazy" alt="Click here to read more of the article."/>
+        //                 </div>
+        //             </a>
+        //             <div class="w-embed">
+        //                 <div class="cms-item" data-id="${story.slug}">
+        //                     <!-- Optional: Place any other static content here -->
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     `).join('');
+            
+        //     $featuredList.html(featuredHtml);
+        // }
 
         // Generate new content sections
         const contentSections = Object.keys(CATEGORIES)
