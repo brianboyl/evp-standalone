@@ -3,7 +3,6 @@
 .env.*.local
 node_modules/
 .DS_Store
-# Generated static pages
-# static-pages/
-# Generated cache files
+# Generated files
+dynamic-pages/home.html
 cache/
