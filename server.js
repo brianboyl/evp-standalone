@@ -17,15 +17,19 @@ app.use(express.static('dynamic-pages'));
 // Root route - generate and serve home page
 app.get('/', async (req, res) => {
     try {
+        console.log('Generating home page...');
+        
         // Generate the dynamic home page
         await generateDynamicHome();
+        console.log('Home page generated successfully');
         
         // Send the generated home page
         const homePage = await fs.readFile('dynamic-pages/home.html', 'utf8');
         res.send(homePage);
+        console.log('Home page served successfully');
     } catch (error) {
         console.error('Error serving home page:', error);
-        res.status(500).send('Error generating home page');
+        res.status(500).send(`Error generating home page: ${error.message}`);
     }
 });
 

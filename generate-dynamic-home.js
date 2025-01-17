@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const path = require('path');
 require('dotenv').config();
 
 // Categories and their corresponding tag IDs
@@ -25,6 +26,13 @@ const PHOTOGRAPHERS = {
 
 async function fetchStories() {
     try {
+        // Create cache directory if it doesn't exist
+        try {
+            await fs.mkdir('cache', { recursive: true });
+        } catch (error) {
+            console.log('Cache directory already exists or could not be created');
+        }
+
         // First try to read from cache
         try {
             const cacheData = await fs.readFile('cache/stories.json', 'utf8');
@@ -150,6 +158,14 @@ function generateCategorySection(categoryName, stories) {
 
 async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
     try {
+        // Create dynamic-pages directory if it doesn't exist
+        const dir = path.dirname(outputPath);
+        try {
+            await fs.mkdir(dir, { recursive: true });
+        } catch (error) {
+            console.log('Directory already exists or could not be created:', dir);
+        }
+
         // Read the template file
         const template = await fs.readFile('dynamic-pages/template.html', 'utf8');
         const $ = cheerio.load(template, { decodeEntities: false });
