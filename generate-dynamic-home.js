@@ -4,6 +4,9 @@ const cheerio = require('cheerio');
 const path = require('path');
 require('dotenv').config();
 
+// Get the project root directory
+const PROJECT_ROOT = process.cwd();
+
 // Categories and their corresponding tag IDs
 const CATEGORIES = {
     'Articles': ['666a6c762536fd5cf0bd7f33'],
@@ -27,15 +30,17 @@ const PHOTOGRAPHERS = {
 async function fetchStories() {
     try {
         // Create cache directory if it doesn't exist
+        const cacheDir = path.join(PROJECT_ROOT, 'cache');
         try {
-            await fs.mkdir('cache', { recursive: true });
+            await fs.mkdir(cacheDir, { recursive: true });
         } catch (error) {
             console.log('Cache directory already exists or could not be created');
         }
 
         // First try to read from cache
+        const cacheFile = path.join(cacheDir, 'stories.json');
         try {
-            const cacheData = await fs.readFile('cache/stories.json', 'utf8');
+            const cacheData = await fs.readFile(cacheFile, 'utf8');
             const cache = JSON.parse(cacheData);
             
             // Check if cache is older than 1 hour
@@ -72,7 +77,7 @@ async function fetchStories() {
         const stories = data.items || [];
 
         // Cache the stories
-        await fs.writeFile('cache/stories.json', JSON.stringify({ timestamp: new Date().toISOString(), stories }));
+        await fs.writeFile(cacheFile, JSON.stringify({ timestamp: new Date().toISOString(), stories }));
 
         return stories;
     } catch (error) {
@@ -158,16 +163,25 @@ function generateCategorySection(categoryName, stories) {
 
 async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
     try {
+        // Make outputPath absolute if it isn't already
+        outputPath = path.isAbsolute(outputPath) ? outputPath : path.join(PROJECT_ROOT, outputPath);
+        console.log('Output path:', outputPath);
+
         // Create dynamic-pages directory if it doesn't exist
         const dir = path.dirname(outputPath);
         try {
             await fs.mkdir(dir, { recursive: true });
+            console.log('Created directory:', dir);
         } catch (error) {
             console.log('Directory already exists or could not be created:', dir);
         }
 
-        // Read the template file
-        const template = await fs.readFile('dynamic-pages/template.html', 'utf8');
+        // Read the template file using absolute path
+        const templatePath = path.join(PROJECT_ROOT, 'dynamic-pages', 'template.html');
+        console.log('Template path:', templatePath);
+        const template = await fs.readFile(templatePath, 'utf8');
+        console.log('Template loaded successfully');
+
         const $ = cheerio.load(template, { decodeEntities: false });
 
         // Fetch all stories

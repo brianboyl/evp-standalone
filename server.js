@@ -19,12 +19,13 @@ app.get('/', async (req, res) => {
     try {
         console.log('Generating home page...');
         
-        // Generate the dynamic home page
-        await generateDynamicHome();
+        // Generate the dynamic home page using absolute path
+        const outputPath = path.join(process.cwd(), 'dynamic-pages', 'home.html');
+        await generateDynamicHome(outputPath);
         console.log('Home page generated successfully');
         
         // Send the generated home page
-        const homePage = await fs.readFile('dynamic-pages/home.html', 'utf8');
+        const homePage = await fs.readFile(outputPath, 'utf8');
         res.send(homePage);
         console.log('Home page served successfully');
     } catch (error) {
