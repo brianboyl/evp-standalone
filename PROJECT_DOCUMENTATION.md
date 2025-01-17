@@ -86,6 +86,46 @@ ExploreVisitPlay is a dynamic travel blog that integrates with Webflow CMS to di
     - Addressed API versioning issues by switching to Webflow API v2.
     - Updated code to handle changes in the API response structure.
 
+## File Descriptions
+
+### Root Directory
+
+- **.env**: Contains environment variables for the project. Ensure sensitive information like API tokens are stored here.
+- **.gitignore**: Specifies files and directories to be ignored by Git.
+- **PROJECT_DOCUMENTATION.md**: Contains comprehensive documentation for the project.
+- **README.md**: Provides a brief overview and setup instructions for the project.
+- **about.html, article.html, home-test.html, etc.**: HTML files likely used for testing or static content.
+- **build-static.js**: Script for building static versions of pages.
+- **check-collection.js, check-site.js**: Scripts for validating Webflow collections and site configurations.
+- **config.js**: Configuration settings for the project.
+- **env.template**: Template for the .env file, showing required environment variables.
+- **example-usage.js**: Example script demonstrating how to use certain project functionalities.
+- **fetch-stories.js**: Script for fetching stories from Webflow.
+- **generate-all-static.js**: Generates static versions of all pages.
+- **generate-dynamic-home.js**: Generates a dynamic home page using Webflow data.
+- **get-cms-items.js, get-collections.js**: Scripts for retrieving CMS items and collections from Webflow.
+- **get-sites.js, get-staging-info.js**: Scripts for retrieving site information and staging details.
+- **index.html.old**: An older version of the index page, kept for reference.
+- **js/**: Directory containing JavaScript files for client-side functionality.
+- **package.json, package-lock.json**: Define project dependencies and metadata.
+- **page-content-viewer.html**: Extracts and displays content from a specified Webflow project. Allows users to generate static pages and save views.
+- **pages-viewer.html**: HTML file for viewing pages.
+- **restart-server.sh**: Script to restart the server.
+- **server.js**: Main server file for handling requests and responses.
+- **styles.css**: Stylesheet for the project.
+- **test-api.sh**: Shell script for testing API endpoints.
+- **update-links.js**: Script for updating links within the project.
+- **vercel.json**: Configuration file for deploying on Vercel.
+- **webflow-api-test.js**: Script for testing Webflow API connectivity.
+- **webpack.config.js**: Configuration for Webpack, if used for bundling assets.
+
+### `dynamic-pages` Directory
+
+- **home.html**: The dynamically generated home page.
+- **template.html**: Template used for generating the dynamic home page.
+
+These descriptions should give you a clear understanding of the project's components and their purposes.
+
 ## Tools and Utilities
 
 ### `get-collections.js`
@@ -103,6 +143,14 @@ ExploreVisitPlay is a dynamic travel blog that integrates with Webflow CMS to di
 ### `webflow-api-test.js`
 - **Purpose**: Tests API connectivity and responses from Webflow.
 - **Usage**: `node webflow-api-test.js`
+
+### `page-content-viewer.html`
+- **Purpose**: Extracts and displays content from a specified Webflow project. Allows users to generate static pages and save views.
+- **Usage**:
+  1. **Load the Viewer**: Open `page-content-viewer.html` in a web browser.
+  2. **Extract Pages**: Ensure your `.env` file is configured with the correct Webflow API keys to extract pages.
+  3. **Generate Static Pages**: Click the "Generate Static Page" button to create and save static versions of the displayed pages.
+  4. **Save Views**: Use the "Save Current View to File" button to save the current view to a file for future reference.
 
 ### Cache Management
 - **Implementation**: Integrated within `generate-dynamic-home.js`.
