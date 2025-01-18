@@ -1,0 +1,13 @@
+# Logging Instructions
+
+When requested to "log our commit," follow these instructions:
+
+1. **Log Actions Taken**: Document what we did in the session since the last commit.
+2. **Log Results**: Describe the results of those actions.
+3. **Understanding the Results**: Explain how those results work.
+4. **Next Steps**: Outline what needs to be done to make those results work.
+5. **Lessons Learned**: Capture what we learned throughout that stage.
+6. **File Documentation**: List any files generated, describe what they do, and how to use them.
+7. **Timestamp and Save**: Timestamp the log and place it into the `log` folder.
+
+The goal of the log is to provide a future session with enough information that important knowledge is not lost.
