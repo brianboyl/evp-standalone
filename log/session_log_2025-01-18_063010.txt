@@ -16,6 +16,7 @@
 ## Lessons Learned
 - The existing tools and scripts effectively support dynamic content viewing and static page generation.
 - The process is efficient and aligns well with the project goals.
+- To ensure all relevant changes are captured, especially when multiple files are involved, using `git add .` can be beneficial. It helps prevent missing any important files or changes that need to be committed.
 
 ## Next Steps
 - Continue exploring and refining the dynamic and static content generation processes.

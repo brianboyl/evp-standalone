@@ -231,6 +231,21 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
         const stories = await fetchStories();
         console.log(`Fetched ${stories.length} stories`);
 
+        // Define categories to display
+        const categories = ['Roadside Attractions', 'Nature', 'Play'];
+
+        // Wrap dynamically generated content within the pagewrapper div
+        const $pageWrapper = $('.pagewrapper');
+        if ($pageWrapper.length) {
+            categories.forEach(category => {
+                const categoryStories = filterStoriesByCategory(stories, CATEGORIES[category]);
+                const categorySection = generateCategorySection(category, categoryStories);
+                $pageWrapper.append(categorySection);
+            });
+        } else {
+            console.warn('No pagewrapper div found to append content');
+        }
+
         // Find the first featured story
         let featuredStory = stories.find(story => story.fieldData['featured'] === true);
         if (!featuredStory) {

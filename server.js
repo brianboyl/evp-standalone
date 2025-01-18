@@ -11,8 +11,8 @@ const port = process.env.PORT || 3000;
 // Add this line to handle JSON requests
 app.use(express.json({ limit: '50mb' }));
 
-// Serve static files from the dynamic-pages directory
-app.use(express.static('dynamic-pages'));
+// Serve static files from the dynamic-pages-v02 directory
+app.use(express.static('dynamic-pages-v02'));
 
 // Root route - generate and serve home page
 app.get('/', async (req, res) => {
@@ -22,7 +22,7 @@ app.get('/', async (req, res) => {
         // In Vercel, use /tmp for the output file
         const outputPath = process.env.VERCEL 
             ? path.join('/tmp', 'home.html')
-            : path.join(process.cwd(), 'dynamic-pages', 'home.html');
+            : path.join(process.cwd(), 'dynamic-pages-v02', 'home.html');
             
         await generateDynamicHome(outputPath);
         console.log('Home page generated successfully');
@@ -247,8 +247,8 @@ app.post('/api/generate-static', async (req, res) => {
     }
 });
 
-// Redirect /dynamic-pages/home.html to / to ensure users get dynamic content
-app.get('/dynamic-pages/home.html', (req, res) => {
+// Redirect /dynamic-pages-v02/home.html to / to ensure users get dynamic content
+app.get('/dynamic-pages-v02/home.html', (req, res) => {
     console.log('Redirecting from static to dynamic page');
     res.redirect('/');
 });
