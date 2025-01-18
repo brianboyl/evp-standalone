@@ -17,6 +17,22 @@
 ## Lessons Learned
 - Wrapping content within the correct HTML structure is crucial for maintaining consistent styling.
 
+## Home Page Generation Process
+1. **Environment and Setup**: The script `generateDynamicHome` is responsible for generating the home page, determining the output path based on the environment.
+2. **Template Loading**: Loads the HTML template using `cheerio` for DOM manipulation.
+3. **Data Fetching**: Fetches stories from the Webflow CMS using the `fetchStories` function.
+4. **Category Sections**: Defines categories ('Roadside Attractions', 'Nature', 'Play') and generates sections for each.
+5. **Featured Story Handling**: Identifies and uses a featured story to populate the landing cover and mobile section.
+6. **DOM Manipulation**: Updates template elements with data from the featured story.
+7. **Output**: Writes the modified HTML to the specified output path, creating the dynamic home page.
+
+## Data Fetching Process
+1. **Cache Check**: Attempts to read stories from a cache file (`stories.json`) and uses it if valid and less than an hour old.
+2. **Fetching Fresh Data**: Fetches fresh stories from Webflow CMS using the Webflow API if the cache is invalid.
+3. **Response Handling**: Validates the API response to ensure it contains a valid array of items.
+4. **Data Validation and Normalization**: Ensures each story has `fieldData` or normalizes `fields` to `fieldData`.
+5. **Caching**: Caches the fetched stories for future use, logging any caching errors without failing the process.
+
 ## File Documentation
 - **dynamic-pages-v02**: A new folder created to store dynamically generated pages.
 - **fetch-webflow-data.js**: A script to fetch image, text, and link information from the Webflow CMS. Usage: Run the script using `node fetch-webflow-data.js` to retrieve and log data.
