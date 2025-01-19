@@ -50,3 +50,29 @@ for (const category of ['Roadside Attractions', 'Nature', 'Play']) {
 - Monitor the home page to ensure content continues to be properly categorized
 - Consider adding more logging to track story selection and filtering process
 - Consider adding automated tests to catch similar issues in the future
+
+### Deployment Process
+1. Created and pushed fix branch:
+   ```bash
+   git checkout -b fix/home-page-duplicates
+   git push -u origin fix/home-page-duplicates
+   ```
+
+2. Verified changes on Vercel preview deployment
+   - Confirmed Featured section displays unique content
+   - Verified category sections show appropriate, non-duplicate stories
+
+3. Merged changes to main:
+   ```bash
+   git checkout main
+   git pull origin main  # Ensure main is up to date
+   git merge fix/home-page-duplicates
+   git push origin main
+   ```
+
+Files included in merge:
+- `generate-dynamic-home.js` - Fixed variable naming conflicts
+- `dynamic-pages/home.html` - Updated generated home page
+- `log/session_log_2025-01-18T22-45-45-952Z.txt` - Session documentation
+
+The fix is now live on the production site via Vercel's automatic deployment.
