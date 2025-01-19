@@ -5,13 +5,20 @@
 2. Developed a script to fetch image, text, and link information from the Webflow CMS.
 3. Updated `generateDynamicHome` to include logic for generating sections for 'Roadside Attractions', 'Nature', and 'Play'.
 4. Ensured dynamically generated content is wrapped within the `pagewrapper` div.
-5. Restarted the server to apply changes.
+5. Implemented content filtering for category sections using the `filterStoriesByCategory` function to ensure that stories have the appropriate tags for their respective categories.
+6. Restarted the server to apply changes.
 
 ## File Documentation
 - **dynamic-pages-v02**: A new folder created to store dynamically generated pages.
 - **fetch-webflow-data.js**: A script to fetch image, text, and link information from the Webflow CMS. Usage: Run the script using `node fetch-webflow-data.js` to retrieve and log data.
 - **generate-dynamic-home.js**: Contains the logic for generating the dynamic home page, including fetching stories and generating sections for different categories. Usage: Integrated into the server to dynamically generate the home page on request.
 - **server.js**: Updated to serve static files from `dynamic-pages-v02` and generate the home page there. Usage: Run the server using `node server.js` or `sh restart-server.sh` to apply changes and serve the dynamic content.
+
+## Field Name Mapping Process
+- The `extractContent` function in `fetch-webflow-data.js` handles the translation of human-readable field names to actual database field names.
+- Data is fetched using the `fetchCollectionItems` function from the Webflow CMS.
+- The function maps fields such as `main-photo`, `big-thumbnail`, `main-title`, `photographer`, `subtitle`, `author`, `content-summary`, and `slug` to their respective database fields.
+- This ensures that the correct data is retrieved and used in the application.
 
 ## Results
 - Successfully created a dynamic home page with multiple sections based on data from the Webflow CMS.

@@ -1,0 +1,659 @@
+Using project root: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project
+Server running at http://localhost:3000
+Visit http://localhost:3000 to see dynamic content
+Generating home page...
+Output path: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages/home.html
+Created directory: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages
+Template path: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages/template.html
+Template loaded successfully
+Cache directory: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/cache
+Using cached stories
+Fetched 190 stories
+Looking for featured story among 190 stories
+Stories with featured field: [
+  { title: 'Palm Beach, FL', slug: undefined, featured: false },
+  { title: 'Mount Pinos', slug: undefined, featured: false },
+  { title: 'Boynton Beach', slug: undefined, featured: false },
+  { title: 'Blue Ridge Parkway ', slug: undefined, featured: false },
+  {
+    title: 'Lost Coast of California ',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Gabrielino Trail', slug: undefined, featured: false },
+  { title: 'Cottonwood Lakes', slug: undefined, featured: false },
+  { title: 'New Orleans, LA', slug: undefined, featured: false },
+  {
+    title: 'Upper Peninsula, Michigan',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Newport, Oregon', slug: undefined, featured: false },
+  { title: 'Victoria ', slug: undefined, featured: false },
+  { title: 'Florida Everglades', slug: undefined, featured: false },
+  { title: 'Cape Canaveral ', slug: undefined, featured: false },
+  { title: 'Mammoth Lakes', slug: undefined, featured: false },
+  { title: 'Maui, Hawaii', slug: undefined, featured: false },
+  {
+    title: 'Oregon Dunes National Recreation Area',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Kauai, Hawaii', slug: undefined, featured: false },
+  { title: 'San Diego, CA', slug: undefined, featured: false },
+  { title: 'Cannon Beach', slug: undefined, featured: false },
+  {
+    title: 'Winchester Mystery House',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Saddlebag Lake', slug: undefined, featured: false },
+  { title: 'Depoe Bay', slug: undefined, featured: false },
+  { title: 'Mendocino', slug: undefined, featured: false },
+  { title: 'Cumberland Island', slug: undefined, featured: false },
+  { title: 'Kingston Dairy ', slug: undefined, featured: false },
+  {
+    title: 'Pinnacles National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Cumberland Island', slug: undefined, featured: false },
+  {
+    title: 'Sleeping Bear Dunes National Lakeshore',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Bahia Honda State Park', slug: undefined, featured: false },
+  {
+    title: "Hawai'i Island (The Big Island)",
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Horse Meadow', slug: undefined, featured: false },
+  { title: 'June Lake', slug: undefined, featured: false },
+  { title: 'Laguna Beach', slug: undefined, featured: false },
+  { title: 'Rock Creek ', slug: undefined, featured: false },
+  { title: 'Mono Lake ', slug: undefined, featured: false },
+  { title: 'Monticello', slug: undefined, featured: false },
+  { title: 'Cambria, CA', slug: undefined, featured: false },
+  {
+    title: 'Mount Rainier National Park',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Robie House & Roloson Houses',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Montaña de Oro’s State Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Arches National Park', slug: undefined, featured: false },
+  { title: 'Traverse City, MI', slug: undefined, featured: false },
+  {
+    title: 'Eugene T. Mahoney State Park',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Moenave Dinosaur Tracks',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Avila Valley Barn', slug: undefined, featured: false },
+  {
+    title: 'Skidaway Island State Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Juniper Springs', slug: undefined, featured: false },
+  { title: 'San Juan Islands', slug: undefined, featured: false },
+  {
+    title: 'Great Smoky Mountains National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Freshkills Park', slug: undefined, featured: false },
+  { title: 'Minneapolis, Minnesota', slug: undefined, featured: false },
+  {
+    title: 'Sequoia and Kings Canyon National Parks',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Nantucket, Massachusetts',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Austin, Texas', slug: undefined, featured: false },
+  { title: 'Covington, Kentucky', slug: undefined, featured: false },
+  { title: 'Olympic National Park', slug: undefined, featured: false },
+  {
+    title: 'Kodachrome Basin State Park ',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'San Xavier del Bac Mission',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Black Canyon of the Gunnison National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Taliesin West', slug: undefined, featured: false },
+  { title: 'Gallup, New Mexico ', slug: undefined, featured: false },
+  { title: 'Whidbey Island', slug: undefined, featured: false },
+  {
+    title: 'Canyonlands National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Taos, New Mexico', slug: undefined, featured: false },
+  {
+    title: 'Huntington Beach Adventure Playground ',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Catalina Island', slug: undefined, featured: false },
+  { title: 'Leadville, Colorado', slug: undefined, featured: false },
+  { title: 'San Mateo Canyon', slug: undefined, featured: false },
+  {
+    title: 'Channel Islands National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Silverton, Colorado', slug: undefined, featured: false },
+  {
+    title: 'Big Basin Redwoods State Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Saguaro National Park', slug: undefined, featured: false },
+  { title: 'Niagara Falls ', slug: undefined, featured: false },
+  {
+    title: 'Yellowstone National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'St. Louis, Missouri', slug: undefined, featured: false },
+  { title: 'Nashville, Tennessee', slug: undefined, featured: false },
+  {
+    title: 'Strong National Museum of Play',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Mackinac Island', slug: undefined, featured: false },
+  { title: 'San Antonio, Texas', slug: undefined, featured: false },
+  { title: 'Ledges State Park', slug: undefined, featured: false },
+  { title: 'Custer State Park', slug: undefined, featured: false },
+  {
+    title: 'Mount Rushmore and Crazy Horse',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Wall Drug', slug: undefined, featured: false },
+  { title: 'Tulsa, Oklahoma ', slug: undefined, featured: false },
+  {
+    title: 'Redwoods National and State Parks',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Ludington, MI', slug: undefined, featured: false },
+  {
+    title: 'Sault Ste. Marie Canal National Historic Site',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Kansas City, MO', slug: undefined, featured: false },
+  { title: 'Pittsburg, PA', slug: undefined, featured: false },
+  { title: 'Lafayette, LA', slug: undefined, featured: false },
+  { title: 'Anastasia State Park', slug: undefined, featured: false },
+  { title: 'Buffalo, Wyoming', slug: undefined, featured: false },
+  { title: 'Blowing Rock', slug: undefined, featured: false },
+  { title: 'Grants Pass, Oregon', slug: undefined, featured: false },
+  { title: 'Seneca Lake', slug: undefined, featured: false },
+  { title: 'Grand Coulee Dam ', slug: undefined, featured: false },
+  { title: 'Hoover Dam', slug: undefined, featured: false },
+  { title: 'Glacier National Park', slug: undefined, featured: false },
+  { title: 'Fredericksburg, Texas', slug: undefined, featured: false },
+  { title: "Coeur d'Alene, Idaho ", slug: undefined, featured: false },
+  ... 90 more items
+]
+Found featured story: { title: 'Starved Rock State Park', slug: undefined, featured: true }
+Added featured story to used stories: Starved Rock State Park
+Featured story tags: [
+  '623132cb74801b43ee0c72c5',
+  '615072e85bd34c10889710aa',
+  '612d7acb4f8d5a7e91be840a',
+  '612d7ad69511a722188af085',
+  '612d7a40ea4449035d215cd7',
+  '612d82770d2a5222be716c6f',
+  '612d82936538f2bedd5a8f3e'
+]
+Found 177 stories with matching tags
+Selected 4 stories for Featured section
+Added Featured story to used stories: Big Basin Redwoods State Park
+Added Featured story to used stories: Mackinac Island
+Added Featured story to used stories: Winchester Mystery House
+Added Featured story to used stories: Scotts Bluff National Monument
+Populating Featured section with stories: [
+  'Big Basin Redwoods State Park',
+  'Mackinac Island',
+  'Winchester Mystery House',
+  'Scotts Bluff National Monument'
+]
+
+Generating Articles section with 185 available stories
+Found 12 stories for Articles
+Selected 4 stories for Articles: [
+  'Austin, Texas',
+  'Nantucket, Massachusetts',
+  'Victoria ',
+  'Palm Beach, FL'
+]
+Added Articles story to used stories: Austin, Texas
+Added Articles story to used stories: Nantucket, Massachusetts
+Added Articles story to used stories: Victoria 
+Added Articles story to used stories: Palm Beach, FL
+
+Generating Art & Design section with 181 available stories
+Found 62 stories for Art & Design
+Selected 4 stories for Art & Design: [
+  'Delving into Omaha History',
+  'Tallahassee, Florida',
+  'Mendocino',
+  'Santa Fe, New Mexico'
+]
+Added Art & Design story to used stories: Delving into Omaha History
+Added Art & Design story to used stories: Tallahassee, Florida
+Added Art & Design story to used stories: Mendocino
+Added Art & Design story to used stories: Santa Fe, New Mexico
+
+Generating Outdoor Activities section with 177 available stories
+Found 114 stories for Outdoor Activities
+Selected 4 stories for Outdoor Activities: [
+  'Arches National Park',
+  'Durango: Trains Meet Outdoor Adventures',
+  'Grand Coulee Dam ',
+  'Mammoth Lakes'
+]
+Added Outdoor Activities story to used stories: Arches National Park
+Added Outdoor Activities story to used stories: Durango: Trains Meet Outdoor Adventures
+Added Outdoor Activities story to used stories: Grand Coulee Dam 
+Added Outdoor Activities story to used stories: Mammoth Lakes
+
+Generating Roadside Attractions section with 173 available stories
+Found 71 stories for Roadside Attractions
+Selected 4 stories for Roadside Attractions: [
+  'Kauai, Hawaii',
+  'Sulphur, OK ',
+  'St. Augustine, Florida: Established 1565',
+  'Devils Tower National Monument'
+]
+Added Roadside Attractions story to used stories: Kauai, Hawaii
+Added Roadside Attractions story to used stories: Sulphur, OK 
+Added Roadside Attractions story to used stories: St. Augustine, Florida: Established 1565
+Added Roadside Attractions story to used stories: Devils Tower National Monument
+
+Generating Nature section with 169 available stories
+Found 97 stories for Nature
+Selected 4 stories for Nature: [
+  'Lone Pine, CA',
+  "Exploring Savannah's Parks and Waterways",
+  'Fredericksburg, Texas',
+  'San Mateo Canyon'
+]
+Added Nature story to used stories: Lone Pine, CA
+Added Nature story to used stories: Exploring Savannah's Parks and Waterways
+Added Nature story to used stories: Fredericksburg, Texas
+Added Nature story to used stories: San Mateo Canyon
+
+Generating Play section with 165 available stories
+Found 103 stories for Play
+Selected 4 stories for Play: [
+  'Kingston Dairy ',
+  'Millennium and Maggie Daley Parks',
+  'Alligators All Around',
+  'Cannon Beach'
+]
+Added Play story to used stories: Kingston Dairy 
+Added Play story to used stories: Millennium and Maggie Daley Parks
+Added Play story to used stories: Alligators All Around
+Added Play story to used stories: Cannon Beach
+Successfully generated page at /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages/home.html
+Home page generated successfully
+Home page served successfully
+Generating home page...
+Output path: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages/home.html
+Created directory: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages
+Template path: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages/template.html
+Template loaded successfully
+Cache directory: /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/cache
+Using cached stories
+Fetched 190 stories
+Looking for featured story among 190 stories
+Stories with featured field: [
+  { title: 'Palm Beach, FL', slug: undefined, featured: false },
+  { title: 'Mount Pinos', slug: undefined, featured: false },
+  { title: 'Boynton Beach', slug: undefined, featured: false },
+  { title: 'Blue Ridge Parkway ', slug: undefined, featured: false },
+  {
+    title: 'Lost Coast of California ',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Gabrielino Trail', slug: undefined, featured: false },
+  { title: 'Cottonwood Lakes', slug: undefined, featured: false },
+  { title: 'New Orleans, LA', slug: undefined, featured: false },
+  {
+    title: 'Upper Peninsula, Michigan',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Newport, Oregon', slug: undefined, featured: false },
+  { title: 'Victoria ', slug: undefined, featured: false },
+  { title: 'Florida Everglades', slug: undefined, featured: false },
+  { title: 'Cape Canaveral ', slug: undefined, featured: false },
+  { title: 'Mammoth Lakes', slug: undefined, featured: false },
+  { title: 'Maui, Hawaii', slug: undefined, featured: false },
+  {
+    title: 'Oregon Dunes National Recreation Area',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Kauai, Hawaii', slug: undefined, featured: false },
+  { title: 'San Diego, CA', slug: undefined, featured: false },
+  { title: 'Cannon Beach', slug: undefined, featured: false },
+  {
+    title: 'Winchester Mystery House',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Saddlebag Lake', slug: undefined, featured: false },
+  { title: 'Depoe Bay', slug: undefined, featured: false },
+  { title: 'Mendocino', slug: undefined, featured: false },
+  { title: 'Cumberland Island', slug: undefined, featured: false },
+  { title: 'Kingston Dairy ', slug: undefined, featured: false },
+  {
+    title: 'Pinnacles National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Cumberland Island', slug: undefined, featured: false },
+  {
+    title: 'Sleeping Bear Dunes National Lakeshore',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Bahia Honda State Park', slug: undefined, featured: false },
+  {
+    title: "Hawai'i Island (The Big Island)",
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Horse Meadow', slug: undefined, featured: false },
+  { title: 'June Lake', slug: undefined, featured: false },
+  { title: 'Laguna Beach', slug: undefined, featured: false },
+  { title: 'Rock Creek ', slug: undefined, featured: false },
+  { title: 'Mono Lake ', slug: undefined, featured: false },
+  { title: 'Monticello', slug: undefined, featured: false },
+  { title: 'Cambria, CA', slug: undefined, featured: false },
+  {
+    title: 'Mount Rainier National Park',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Robie House & Roloson Houses',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Montaña de Oro’s State Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Arches National Park', slug: undefined, featured: false },
+  { title: 'Traverse City, MI', slug: undefined, featured: false },
+  {
+    title: 'Eugene T. Mahoney State Park',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Moenave Dinosaur Tracks',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Avila Valley Barn', slug: undefined, featured: false },
+  {
+    title: 'Skidaway Island State Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Juniper Springs', slug: undefined, featured: false },
+  { title: 'San Juan Islands', slug: undefined, featured: false },
+  {
+    title: 'Great Smoky Mountains National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Freshkills Park', slug: undefined, featured: false },
+  { title: 'Minneapolis, Minnesota', slug: undefined, featured: false },
+  {
+    title: 'Sequoia and Kings Canyon National Parks',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Nantucket, Massachusetts',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Austin, Texas', slug: undefined, featured: false },
+  { title: 'Covington, Kentucky', slug: undefined, featured: false },
+  { title: 'Olympic National Park', slug: undefined, featured: false },
+  {
+    title: 'Kodachrome Basin State Park ',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'San Xavier del Bac Mission',
+    slug: undefined,
+    featured: false
+  },
+  {
+    title: 'Black Canyon of the Gunnison National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Taliesin West', slug: undefined, featured: false },
+  { title: 'Gallup, New Mexico ', slug: undefined, featured: false },
+  { title: 'Whidbey Island', slug: undefined, featured: false },
+  {
+    title: 'Canyonlands National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Taos, New Mexico', slug: undefined, featured: false },
+  {
+    title: 'Huntington Beach Adventure Playground ',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Catalina Island', slug: undefined, featured: false },
+  { title: 'Leadville, Colorado', slug: undefined, featured: false },
+  { title: 'San Mateo Canyon', slug: undefined, featured: false },
+  {
+    title: 'Channel Islands National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Silverton, Colorado', slug: undefined, featured: false },
+  {
+    title: 'Big Basin Redwoods State Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Saguaro National Park', slug: undefined, featured: false },
+  { title: 'Niagara Falls ', slug: undefined, featured: false },
+  {
+    title: 'Yellowstone National Park',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'St. Louis, Missouri', slug: undefined, featured: false },
+  { title: 'Nashville, Tennessee', slug: undefined, featured: false },
+  {
+    title: 'Strong National Museum of Play',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Mackinac Island', slug: undefined, featured: false },
+  { title: 'San Antonio, Texas', slug: undefined, featured: false },
+  { title: 'Ledges State Park', slug: undefined, featured: false },
+  { title: 'Custer State Park', slug: undefined, featured: false },
+  {
+    title: 'Mount Rushmore and Crazy Horse',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Wall Drug', slug: undefined, featured: false },
+  { title: 'Tulsa, Oklahoma ', slug: undefined, featured: false },
+  {
+    title: 'Redwoods National and State Parks',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Ludington, MI', slug: undefined, featured: false },
+  {
+    title: 'Sault Ste. Marie Canal National Historic Site',
+    slug: undefined,
+    featured: false
+  },
+  { title: 'Kansas City, MO', slug: undefined, featured: false },
+  { title: 'Pittsburg, PA', slug: undefined, featured: false },
+  { title: 'Lafayette, LA', slug: undefined, featured: false },
+  { title: 'Anastasia State Park', slug: undefined, featured: false },
+  { title: 'Buffalo, Wyoming', slug: undefined, featured: false },
+  { title: 'Blowing Rock', slug: undefined, featured: false },
+  { title: 'Grants Pass, Oregon', slug: undefined, featured: false },
+  { title: 'Seneca Lake', slug: undefined, featured: false },
+  { title: 'Grand Coulee Dam ', slug: undefined, featured: false },
+  { title: 'Hoover Dam', slug: undefined, featured: false },
+  { title: 'Glacier National Park', slug: undefined, featured: false },
+  { title: 'Fredericksburg, Texas', slug: undefined, featured: false },
+  { title: "Coeur d'Alene, Idaho ", slug: undefined, featured: false },
+  ... 90 more items
+]
+Found featured story: { title: 'Starved Rock State Park', slug: undefined, featured: true }
+Added featured story to used stories: Starved Rock State Park
+Featured story tags: [
+  '623132cb74801b43ee0c72c5',
+  '615072e85bd34c10889710aa',
+  '612d7acb4f8d5a7e91be840a',
+  '612d7ad69511a722188af085',
+  '612d7a40ea4449035d215cd7',
+  '612d82770d2a5222be716c6f',
+  '612d82936538f2bedd5a8f3e'
+]
+Found 177 stories with matching tags
+Selected 4 stories for Featured section
+Added Featured story to used stories: Grand Coulee Dam 
+Added Featured story to used stories: Ft. Collins, Colorado 
+Added Featured story to used stories: Philly, Pennsylvania
+Added Featured story to used stories: Death Valley National Park
+Populating Featured section with stories: [
+  'Grand Coulee Dam ',
+  'Ft. Collins, Colorado ',
+  'Philly, Pennsylvania',
+  'Death Valley National Park'
+]
+
+Generating Articles section with 185 available stories
+Found 13 stories for Articles
+Selected 4 stories for Articles: [
+  'Monticello',
+  'Robie House & Roloson Houses',
+  'Newport, Oregon',
+  'Palm Beach, FL'
+]
+Added Articles story to used stories: Monticello
+Added Articles story to used stories: Robie House & Roloson Houses
+Added Articles story to used stories: Newport, Oregon
+Added Articles story to used stories: Palm Beach, FL
+
+Generating Art & Design section with 181 available stories
+Found 60 stories for Art & Design
+Selected 4 stories for Art & Design: [
+  'Taos, New Mexico',
+  'William Howard Taft National Historic Site',
+  'The Museum of International Folk Art',
+  "Coeur d'Alene, Idaho "
+]
+Added Art & Design story to used stories: Taos, New Mexico
+Added Art & Design story to used stories: William Howard Taft National Historic Site
+Added Art & Design story to used stories: The Museum of International Folk Art
+Added Art & Design story to used stories: Coeur d'Alene, Idaho 
+
+Generating Outdoor Activities section with 177 available stories
+Found 114 stories for Outdoor Activities
+Selected 4 stories for Outdoor Activities: [
+  'Florida Love: Favorites of the Sunshine State',
+  'Children’s Garden at the Huntington',
+  'Bahia Honda State Park',
+  'Strong National Museum of Play'
+]
+Added Outdoor Activities story to used stories: Florida Love: Favorites of the Sunshine State
+Added Outdoor Activities story to used stories: Children’s Garden at the Huntington
+Added Outdoor Activities story to used stories: Bahia Honda State Park
+Added Outdoor Activities story to used stories: Strong National Museum of Play
+
+Generating Roadside Attractions section with 173 available stories
+Found 70 stories for Roadside Attractions
+Selected 4 stories for Roadside Attractions: [
+  'Seven Magic Mountains',
+  'Mobile, Alabama',
+  'Fallingwater',
+  "Exploring Savannah's Parks and Waterways"
+]
+Added Roadside Attractions story to used stories: Seven Magic Mountains
+Added Roadside Attractions story to used stories: Mobile, Alabama
+Added Roadside Attractions story to used stories: Fallingwater
+Added Roadside Attractions story to used stories: Exploring Savannah's Parks and Waterways
+
+Generating Nature section with 169 available stories
+Found 97 stories for Nature
+Selected 4 stories for Nature: [
+  'San Juan Islands',
+  'Lost Coast of California ',
+  'Park City, Utah',
+  'Juniper Springs'
+]
+Added Nature story to used stories: San Juan Islands
+Added Nature story to used stories: Lost Coast of California 
+Added Nature story to used stories: Park City, Utah
+Added Nature story to used stories: Juniper Springs
+
+Generating Play section with 165 available stories
+Found 103 stories for Play
+Selected 4 stories for Play: [
+  'Mammoth Lakes',
+  'Austin, Texas',
+  'Capitol Reef National Park',
+  'Salton Sea'
+]
+Added Play story to used stories: Mammoth Lakes
+Added Play story to used stories: Austin, Texas
+Added Play story to used stories: Capitol Reef National Park
+Added Play story to used stories: Salton Sea
+Successfully generated page at /Users/brianboyl/dev/evp-windsurf/CascadeProjects/windsurf-project/dynamic-pages/home.html
+Home page generated successfully
+Home page served successfully

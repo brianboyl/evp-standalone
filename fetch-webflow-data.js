@@ -5,27 +5,52 @@ const WEBFLOW_API_TOKEN = process.env.WEBFLOW_API_TOKEN;
 const WEBFLOW_COLLECTION_ID = process.env.WEBFLOW_COLLECTION_ID;
 
 async function fetchCollectionItems() {
-    const url = `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
-                'accept-version': '2.0.0',
-                'Accept': 'application/json'
+    let allItems = [];
+    let offset = 0;
+    const limit = 100;
+
+    while (true) {
+        const url = `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items?offset=${offset}&limit=${limit}`;
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
+                    'accept-version': '2.0.0',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
             }
-        });
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+            const data = await response.json();
+            
+            if (!data.items || data.items.length === 0) {
+                break; // No more items to fetch
+            }
+
+            const items = data.items.map(item => {
+                return {
+                    ...item,
+                    fieldData: {
+                        ...item.fieldData,
+                        featured: item.fieldData['featured'] || item.fieldData['Featured']
+                    }
+                };
+            });
+
+            allItems = allItems.concat(items);
+            offset += limit;
+
+        } catch (error) {
+            console.error('Error fetching collection items:', error);
+            break;
         }
-
-        const data = await response.json();
-        console.log('Full API response:', JSON.stringify(data, null, 2));
-        return data.items;
-    } catch (error) {
-        console.error('Error fetching collection items:', error);
     }
+
+    return allItems;
 }
 
 async function extractContent() {

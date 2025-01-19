@@ -30,7 +30,9 @@ const PHOTOGRAPHERS = {
 
 async function fetchStories() {
     try {
-        let stories = null;
+        let allStories = [];
+        let offset = 0;
+        const limit = 100;
         
         // Try to read from cache first
         try {
@@ -60,67 +62,102 @@ async function fetchStories() {
         console.log('Fetching fresh stories from Webflow...');
         console.log('Using Collection ID:', process.env.WEBFLOW_COLLECTION_ID);
         
-        // Fetch stories from Webflow using v2 API
-        const response = await fetch(
-            `https://api.webflow.com/v2/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${process.env.WEBFLOW_API_TOKEN}`,
-                    'accept-version': '2.0.0',
-                    'Accept': 'application/json'
+        while (true) {
+            console.log(`Fetching items with offset ${offset} and limit ${limit}...`);
+            
+            // Fetch stories from Webflow using v2 API
+            const response = await fetch(
+                `https://api.webflow.com/v2/collections/${process.env.WEBFLOW_COLLECTION_ID}/items?offset=${offset}&limit=${limit}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${process.env.WEBFLOW_API_TOKEN}`,
+                        'accept-version': '2.0.0',
+                        'Accept': 'application/json'
+                    }
                 }
+            );
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Webflow API error: ${response.status} ${response.statusText}\n${errorText}`);
             }
-        );
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Webflow API error: ${response.status} ${response.statusText}\n${errorText}`);
+            const data = await response.json();
+            console.log('Webflow API response:', {
+                total: data.pagination?.total || 0,
+                count: data.items?.length || 0,
+                offset: data.pagination?.offset || 0,
+                limit: data.pagination?.limit || 0
+            });
+
+            if (!data.items || !Array.isArray(data.items)) {
+                console.error('Full API response:', JSON.stringify(data, null, 2));
+                throw new Error('Invalid response from Webflow API: no items array');
+            }
+
+            if (data.items.length === 0) {
+                console.log('No more items to fetch');
+                break;
+            }
+
+            // Validate story structure for v2 API
+            data.items.forEach((story, index) => {
+                if (!story.fieldData && !story.fields) {
+                    console.error('Invalid story:', JSON.stringify(story, null, 2));
+                    throw new Error(`Story at index ${index} has no fieldData or fields`);
+                }
+            });
+
+            allStories = allStories.concat(data.items);
+            console.log(`Total stories fetched so far: ${allStories.length}`);
+
+            // Log featured items in this batch
+            const featuredItems = data.items.filter(story => story.fieldData?.featured === true);
+            if (featuredItems.length > 0) {
+                console.log('Featured items in this batch:', featuredItems.map(story => ({
+                    title: story.fieldData['main-title'],
+                    slug: story.slug,
+                    featured: story.fieldData.featured
+                })));
+            }
+
+            offset += limit;
+            
+            // If we've fetched all items (based on total count), break
+            if (data.pagination?.total && offset >= data.pagination.total) {
+                console.log('Reached total count, stopping pagination');
+                break;
+            }
         }
 
-        const data = await response.json();
-        console.log('Webflow API response:', {
-            total: data.pagination?.total || 0,
-            count: data.items?.length || 0,
-            offset: data.pagination?.offset || 0,
-            limit: data.pagination?.limit || 0
-        });
-
-        if (!data.items || !Array.isArray(data.items)) {
-            console.error('Full API response:', JSON.stringify(data, null, 2));
-            throw new Error('Invalid response from Webflow API: no items array');
-        }
-
-        stories = data.items || [];
-        if (stories.length === 0) {
+        if (allStories.length === 0) {
             throw new Error('No stories found in Webflow collection');
         }
 
-        // Validate story structure for v2 API
-        stories.forEach((story, index) => {
-            if (!story.fieldData && !story.fields) {
-                console.error('Invalid story:', JSON.stringify(story, null, 2));
-                throw new Error(`Story at index ${index} is missing both fieldData and fields`);
-            }
-            // If using fields instead of fieldData, normalize it
-            if (!story.fieldData && story.fields) {
-                story.fieldData = story.fields;
-            }
-        });
+        // Log all featured items
+        const allFeaturedItems = allStories.filter(story => story.fieldData?.featured === true);
+        console.log('All featured items:', allFeaturedItems.map(story => ({
+            title: story.fieldData['main-title'],
+            slug: story.slug,
+            featured: story.fieldData.featured
+        })));
 
-        // Try to cache the stories, but don't fail if caching fails
+        // Cache the stories
         try {
             const cacheDir = path.join(PROJECT_ROOT, 'cache');
             const cacheFile = path.join(cacheDir, 'stories.json');
-            await fs.mkdir(cacheDir, { recursive: true });
-            await fs.writeFile(cacheFile, JSON.stringify({ timestamp: new Date().toISOString(), stories }));
-            console.log(`Cached ${stories.length} stories`);
+            await fs.writeFile(cacheFile, JSON.stringify({
+                timestamp: new Date(),
+                stories: allStories
+            }));
+            console.log('Stories cached successfully');
         } catch (error) {
-            console.warn('Failed to cache stories:', error.message);
+            console.error('Error caching stories:', error);
         }
 
-        return stories;
+        return allStories;
     } catch (error) {
-        console.error('Error fetching stories:', error);
+        console.error('Error in fetchStories:', error);
         throw error;
     }
 }
@@ -247,6 +284,13 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
         }
 
         // Find the first featured story
+        console.log('Looking for featured story among', stories.length, 'stories');
+        console.log('Stories with featured field:', stories.filter(story => story.fieldData['featured'] !== undefined).map(story => ({
+            title: story.fieldData['main-title'],
+            slug: story.slug,
+            featured: story.fieldData['featured']
+        })));
+        
         let featuredStory = stories.find(story => story.fieldData['featured'] === true);
         if (!featuredStory) {
             console.warn('No featured story found. Please set at least one story as featured in Webflow.');
@@ -256,8 +300,14 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
                 throw new Error('No stories available to use as featured story');
             }
             console.log('Using first story as fallback:', featuredStory.fieldData['main-title']);
+        } else {
+            console.log('Found featured story:', {
+                title: featuredStory.fieldData['main-title'],
+                slug: featuredStory.slug,
+                featured: featuredStory.fieldData['featured']
+            });
         }
-
+        
         // Add featured story to used stories
         const usedStoryIds = new Set();
         usedStoryIds.add(featuredStory.id);

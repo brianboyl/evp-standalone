@@ -9,5 +9,6 @@ When requested to "log our commit," follow these instructions:
 5. **Lessons Learned**: Capture what we learned throughout that stage.
 6. **File Documentation**: List any files generated, describe what they do, and how to use them.
 7. **Timestamp and Save**: Timestamp the log and place it into the `log` folder.
+8. **Insert Commit ID**: After committing changes, insert the commit ID at the top of the log file to associate it with the specific commit.
 
 The goal of the log is to provide a future session with enough information that important knowledge is not lost.

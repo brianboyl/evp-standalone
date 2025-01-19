@@ -20,23 +20,57 @@ const PHOTOGRAPHERS = {
 
 async function fetchStories() {
     try {
-        const response = await fetch(
-            `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
-                    'accept-version': '2.0.0',
-                    'Accept': 'application/json'
-                }
-            }
-        );
+        let allItems = [];
+        let offset = 0;
+        const limit = 100;
+        console.log('Starting to fetch stories...');
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch stories: ${response.status}`);
+        while (true) {
+            console.log(`Fetching items with offset ${offset} and limit ${limit}...`);
+            const response = await fetch(
+                `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items?offset=${offset}&limit=${limit}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
+                        'accept-version': '2.0.0',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch stories: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(`Received ${data.items?.length || 0} items`);
+            
+            if (!data.items || data.items.length === 0) {
+                console.log('No more items to fetch');
+                break;
+            }
+
+            // Handle both casing variants of the featured field
+            const items = data.items.map(item => ({
+                ...item,
+                fieldData: {
+                    ...item.fieldData,
+                    featured: item.fieldData['featured'] || item.fieldData['Featured']
+                }
+            }));
+
+            allItems = allItems.concat(items);
+            offset += limit;
         }
 
-        const data = await response.json();
-        return data.items || [];
+        console.log(`Total items fetched: ${allItems.length}`);
+        console.log('Featured items:', allItems.filter(story => story.fieldData?.featured === true).map(story => ({
+            title: story.fieldData['main-title'],
+            slug: story.slug,
+            featured: story.fieldData.featured
+        })));
+
+        return allItems;
     } catch (error) {
         console.error('Error fetching stories:', error);
         return [];
@@ -89,6 +123,32 @@ function generateStoryCard(story) {
     `;
 }
 
+function generateSplashCard(story) {
+    const { fieldData } = story;
+    const photographerName = PHOTOGRAPHERS[fieldData['photographer']] || fieldData['photographer'];
+    
+    return `
+        <div role="listitem" class="coversection w-dyn-item">
+            ${fieldData['big-thumbnail']?.url ? 
+                `<img src="${fieldData['big-thumbnail'].url}" 
+                     loading="lazy" 
+                     alt="${fieldData['main-title'] || ''}"
+                     sizes="(max-width: 991px) 100vw, 940px" 
+                     class="coverimage">` : ''}
+            <div class="photocreditblock">
+                <div class="phototext">Photo:</div>
+                <div class="coverphotocredit">${photographerName}</div>
+            </div>
+            <div class="covertitle">
+                <div class="covertitleflexcontainer w-clearfix">
+                    <h1 class="coverheading">${fieldData['main-title'] || ''}</h1>
+                    <a href="/stories/${story.slug}" class="readonbutton w-button">Read On!</a>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function generateCategorySection(categoryName, stories) {
     const filteredStories = filterStoriesByCategory(stories, CATEGORIES[categoryName]);
     const randomStories = shuffleArray([...filteredStories]).slice(0, 4);
@@ -105,6 +165,40 @@ function generateCategorySection(categoryName, stories) {
 async function updateCategoryContent() {
     const stories = await fetchStories();
     
+    // Find featured story for splash screen
+    const featuredStory = stories.find(story => story.fieldData?.featured === true);
+    console.log('Featured story for splash:', featuredStory ? {
+        title: featuredStory.fieldData['main-title'],
+        slug: featuredStory.slug,
+        featured: featuredStory.fieldData.featured
+    } : 'None found');
+
+    if (featuredStory) {
+        const splashContent = generateSplashCard(featuredStory);
+        const splashElement = document.querySelector('.landingcoverwrapper .collection-list-4');
+        const mobileSplashElement = document.querySelector('.storywrapperfeatonly .landingstorysection');
+        if (splashElement) {
+            splashElement.innerHTML = splashContent;
+        }
+        if (mobileSplashElement) {
+            mobileSplashElement.innerHTML = generateStoryCard(featuredStory);
+        }
+    }
+
+    // Find all featured stories for Featured section
+    const featuredStories = stories.filter(story => story.fieldData?.featured === true);
+    console.log('All featured stories:', featuredStories.map(story => ({
+        title: story.fieldData['main-title'],
+        slug: story.slug,
+        featured: story.fieldData.featured
+    })));
+
+    const featuredSection = document.querySelector('.storywrappernofeat .landingstorysection');
+    if (featuredSection && featuredStories.length > 0) {
+        featuredSection.innerHTML = featuredStories.map(story => generateStoryCard(story)).join('');
+    }
+    
+    // Update other category sections
     Object.keys(CATEGORIES).forEach(categoryName => {
         const sectionContent = generateCategorySection(categoryName, stories);
         const sectionElement = document.querySelector(`[data-category="${categoryName}"] .landingstorysection`);

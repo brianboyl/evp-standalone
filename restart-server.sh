@@ -7,6 +7,9 @@ if [ ! -z "$PID" ]; then
     kill -9 $PID
 fi
 
-# Start the server
+# Create logs directory if it doesn't exist
+mkdir -p logs
+
+# Start the server and save logs
 echo "Starting server..."
-node server.js
+node server.js > logs/server.log 2>&1
