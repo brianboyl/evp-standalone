@@ -1,0 +1,51 @@
+# Session Log: 2025-01-18 22:45:45 PST
+
+## Bug Fix: Home Page Content Duplication
+
+### Issue Description
+The home page was displaying duplicate content, specifically showing the Featured section content in other category sections (Roadside Attractions, Nature, Play).
+
+### Root Cause
+1. Duplicate variable declarations in `generate-dynamic-home.js`:
+   - `$featuredSection` was declared twice
+   - `categories` was declared twice
+2. These duplicate declarations were causing the script to crash before properly processing category sections
+
+### Solution
+1. Fixed variable naming conflicts:
+   - Renamed second `$featuredSection` to `$featuredContentSection`
+   - Removed duplicate `categories` declaration by inlining the array in the for...of loop
+2. These fixes allowed the script to:
+   - Properly mark featured stories as "used"
+   - Filter out used stories before processing each category
+   - Select unique stories for each category section
+
+### Verification
+- Each section now displays unique content based on its category tags
+- Logs confirm different stories are being selected for each section
+- Featured section and category sections are properly populated with distinct content
+
+### Code Changes
+Modified `generate-dynamic-home.js`:
+```javascript
+// Before: Duplicate variable declaration
+const $featuredSection = $('.content-section').first();
+// After: Renamed to avoid conflict
+const $featuredContentSection = $('.content-section').first();
+
+// Before: Separate categories declaration
+const categories = ['Roadside Attractions', 'Nature', 'Play'];
+for (const category of categories) {
+// After: Inline array in loop
+for (const category of ['Roadside Attractions', 'Nature', 'Play']) {
+```
+
+### Results
+- Home page now correctly displays different stories in each section
+- Featured section maintains its unique content
+- Category sections (Roadside Attractions, Nature, Play) show content specific to their tags
+
+### Next Steps
+- Monitor the home page to ensure content continues to be properly categorized
+- Consider adding more logging to track story selection and filtering process
+- Consider adding automated tests to catch similar issues in the future

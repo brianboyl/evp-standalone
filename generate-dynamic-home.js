@@ -163,9 +163,15 @@ async function fetchStories() {
 }
 
 function filterStoriesByCategory(stories, categoryTagIds) {
+    console.log('\nFiltering stories for category with tags:', categoryTagIds);
     return stories.filter(story => {
         const storyTagIds = story.fieldData.tags || [];
-        return categoryTagIds.some(tagId => storyTagIds.includes(tagId));
+        const matches = categoryTagIds.some(tagId => storyTagIds.includes(tagId));
+        if (matches) {
+            console.log(`Story "${story.fieldData['main-title']}" matches category`);
+            console.log('Story tags:', storyTagIds);
+        }
+        return matches;
     });
 }
 
@@ -364,44 +370,47 @@ async function generateDynamicHome(outputPath = 'dynamic-pages/home.html') {
             console.log('Added Featured story to used stories:', story.fieldData['main-title']);
         });
 
-        // Populate the Featured stories section with randomly selected related stories
-        const $featuredList = $('.storywrappernofeat .landingstorysection');
-        if ($featuredList.length && selectedStories.length > 0) {
-            console.log('Populating Featured section with stories:', selectedStories.map(s => s.fieldData['main-title']));
-            const featuredHtml = selectedStories.map(story => generateStoryCard(story)).join('\n');
-            $featuredList.html(featuredHtml);
+        // Update the existing Featured section with randomly selected related stories
+        const $featuredContentSection = $('.content-section').first();
+        if ($featuredContentSection.length && selectedStories.length > 0) {
+            console.log('Updating Featured section with stories:', selectedStories.map(s => s.fieldData['main-title']));
+            const $dynList = $featuredContentSection.find('.landingstorysection');
+            if ($dynList.length) {
+                const featuredHtml = selectedStories.map(story => generateStoryCard(story)).join('\n');
+                $dynList.html(featuredHtml);
+            }
         }
 
         // Generate new content sections, excluding used stories
-        const contentSections = Object.keys(CATEGORIES)
-            .map(category => {
-                // Filter out used stories before generating the section
-                const availableStories = stories.filter(story => !usedStoryIds.has(story.id));
-                console.log(`\nGenerating ${category} section with ${availableStories.length} available stories`);
-                
-                // Get stories for this category
-                const categoryStories = filterStoriesByCategory(availableStories, CATEGORIES[category]);
-                console.log(`Found ${categoryStories.length} stories for ${category}`);
-                
-                // Get random stories for this section
-                const randomStories = shuffleArray([...categoryStories]).slice(0, 4);
-                console.log(`Selected ${randomStories.length} stories for ${category}:`, randomStories.map(s => s.fieldData['main-title']));
-                
-                // Add these stories to used stories
-                randomStories.forEach(story => {
-                    usedStoryIds.add(story.id);
-                    console.log(`Added ${category} story to used stories:`, story.fieldData['main-title']);
-                });
-                
-                // Generate the section HTML
-                return generateCategorySection(category, randomStories);
-            })
-            .filter(Boolean)
-            .join('\n');
-
-        // Insert the new content sections into the container
-        const $container = $('.content-container');
-        $container.append(contentSections);
+        for (const category of ['Roadside Attractions', 'Nature', 'Play']) {
+            console.log(`\n=== Processing ${category} section ===`);
+            console.log('Category tag IDs:', CATEGORIES[category]);
+            
+            // Filter out already used stories before filtering by category
+            const availableStories = stories.filter(story => !usedStoryIds.has(story.id));
+            console.log(`${availableStories.length} stories available (not used in other sections)`);
+            
+            // Get stories for this category from available stories
+            const categoryStories = filterStoriesByCategory(availableStories, CATEGORIES[category]);
+            console.log(`Found ${categoryStories.length} stories matching ${category} tags:`);
+            categoryStories.forEach(story => {
+                console.log(`- ${story.fieldData['main-title']} (ID: ${story.id})`);
+            });
+            
+            // Get random stories for this section
+            const randomStories = shuffleArray([...categoryStories]).slice(0, 4);
+            console.log(`\nSelected ${randomStories.length} random stories for ${category}:`);
+            randomStories.forEach(story => {
+                console.log(`- ${story.fieldData['main-title']} (ID: ${story.id})`);
+                usedStoryIds.add(story.id);
+            });
+            
+            // Generate and append the category section
+            const categorySection = generateCategorySection(category, randomStories);
+            if (categorySection) {
+                $pageWrapper.append(categorySection);
+            }
+        }
 
         // Write the modified file
         await fs.writeFile(outputPath, $.html());
